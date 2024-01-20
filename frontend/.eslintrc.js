@@ -12,5 +12,7 @@ module.exports = {
         project: "./tsconfig.json",
     },
 
-    rules: {},
+    rules: {
+        "@typescript-eslint/consistent-type-definitions": "off",
+    },
 };
