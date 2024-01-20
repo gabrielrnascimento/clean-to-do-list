@@ -38,11 +38,13 @@ export const ToDoList = (): JSX.Element => {
 
 interface TodoProps {
     content: string;
+    done?: boolean;
     onChange: (content: string) => void;
 }
 
 const Todo = ({ content, onChange }: TodoProps): JSX.Element => {
     const [todoContent, setTodoContent] = useState<string>(content);
+    const [done, setDone] = useState<boolean>(false);
 
     useEffect(() => {
         setTodoContent(content);
@@ -52,15 +54,29 @@ const Todo = ({ content, onChange }: TodoProps): JSX.Element => {
         onChange(todoContent);
     };
 
+    const handleCheckboxChange = (): void => {
+        setDone(!done);
+    };
+
     return (
-        <input
-            data-testid="todo"
-            type="text"
-            value={todoContent}
-            onBlur={handleBlur}
-            onChange={(event) => {
-                setTodoContent(event.target.value);
-            }}
-        />
+        <div data-testid="todo">
+            <input
+                data-testid="status"
+                type="checkbox"
+                checked={done}
+                onChange={() => {
+                    handleCheckboxChange();
+                }}
+            />
+            <input
+                data-testid="content"
+                type="text"
+                value={todoContent}
+                onBlur={handleBlur}
+                onChange={(event) => {
+                    setTodoContent(event.target.value);
+                }}
+            />
+        </div>
     );
 };
