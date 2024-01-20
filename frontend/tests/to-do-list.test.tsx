@@ -20,7 +20,7 @@ describe("ToDoList", () => {
 
         fireEvent.click(addButton);
 
-        const todos = screen.getAllByTestId("todo");
+        const todos = screen.getAllByTestId("content");
         const todo = todos[0] as HTMLInputElement;
 
         expect(todos.length).toBe(1);
@@ -34,7 +34,7 @@ describe("ToDoList", () => {
 
         fireEvent.click(addButton);
 
-        const todos = screen.getAllByTestId("todo");
+        const todos = screen.getAllByTestId("content");
 
         const todo = todos[0] as HTMLInputElement;
 
@@ -42,5 +42,23 @@ describe("ToDoList", () => {
         fireEvent.blur(todo);
 
         expect(todo.value).toBe("changed todo");
+    });
+
+    test("should mark a todo as done", () => {
+        render(<ToDoList />);
+
+        const addButton = screen.getByTestId("add-button");
+
+        fireEvent.click(addButton);
+
+        const todoCheckbox = screen.getByTestId("status");
+
+        fireEvent.click(todoCheckbox);
+
+        expect(todoCheckbox).toBeChecked();
+
+        fireEvent.click(todoCheckbox);
+
+        expect(todoCheckbox).not.toBeChecked();
     });
 });
