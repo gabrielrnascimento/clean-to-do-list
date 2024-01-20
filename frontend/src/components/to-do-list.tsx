@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, type MouseEventHandler, useEffect } from "react";
+import React, { useState, type MouseEventHandler, useEffect } from "react";
 
 export const ToDoList = (): JSX.Element => {
     const [todos, setTodos] = useState<string[]>([]);
@@ -54,24 +54,15 @@ interface TodoProps {
     onDelete: () => void;
 }
 
-const Todo = ({ content, onChange, onDelete }: TodoProps): JSX.Element => {
-    const [todoContent, setTodoContent] = useState<string>(content);
+const Todo = ({ onChange, onDelete }: TodoProps): JSX.Element => {
     const [done, setDone] = useState<boolean>(false);
-
-    useEffect(() => {
-        setTodoContent(content);
-    }, [content]);
-
-    const handleBlur = (): void => {
-        onChange(todoContent);
-    };
 
     const handleCheckboxChange = (): void => {
         setDone(!done);
     };
 
     return (
-        <div data-testid="todo">
+        <div data-testid="todo" className="flex items-center">
             <input
                 data-testid="status"
                 type="checkbox"
@@ -80,18 +71,53 @@ const Todo = ({ content, onChange, onDelete }: TodoProps): JSX.Element => {
                     handleCheckboxChange();
                 }}
             />
-            <input
-                data-testid="content"
-                type="text"
-                value={todoContent}
-                onBlur={handleBlur}
-                onChange={(event) => {
-                    setTodoContent(event.target.value);
-                }}
-            />
+
+            <ResizableInput placeholder={"new to do"} handleChange={onChange} />
+
             <button data-testid="delete-button" onClick={onDelete}>
                 delete to do
             </button>
+        </div>
+    );
+};
+
+interface ResizableInputProps {
+    placeholder: string;
+    handleChange: (content: string) => void;
+}
+
+const ResizableInput = ({
+    placeholder,
+    handleChange,
+}: ResizableInputProps): JSX.Element => {
+    const [inputValue, setInputValue] = useState<string>("");
+
+    useEffect(() => {
+        setInputValue(inputValue);
+    }, [inputValue]);
+
+    const handleInput = (event: React.ChangeEvent<HTMLInputElement>): void => {
+        setInputValue(event.target.value);
+    };
+
+    const handleBlur = (): void => {
+        handleChange(inputValue);
+    };
+
+    return (
+        <div className="relative inline-block">
+            <span className="px-1 text-base inline-block invisible whitespace-pre">
+                {inputValue !== "" ? inputValue : placeholder}
+            </span>
+            <input
+                data-testid="content"
+                className="px-1 text-base absolute top-0 left-0 right-0 bottom-0 border-none bg-transparent focus:outline-none"
+                value={inputValue}
+                onBlur={handleBlur}
+                onChange={handleInput}
+                autoFocus
+                placeholder={placeholder}
+            />
         </div>
     );
 };

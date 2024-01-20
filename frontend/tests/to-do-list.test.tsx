@@ -1,5 +1,5 @@
 import "@testing-library/jest-dom";
-import { fireEvent, render, screen } from "@testing-library/react";
+import React, { fireEvent, render, screen } from "@testing-library/react";
 import { ToDoList } from "@/components/to-do-list";
 
 describe("ToDoList", () => {
@@ -22,7 +22,7 @@ describe("ToDoList", () => {
         const todo = todos[0] as HTMLInputElement;
 
         expect(todos.length).toBe(1);
-        expect(todo.value).toBe("new todo");
+        expect(todo.placeholder).toBe("new to do");
     });
 
     test("should edit a todo text content", () => {
@@ -32,10 +32,10 @@ describe("ToDoList", () => {
         const todos = screen.getAllByTestId("content");
         const todo = todos[0] as HTMLInputElement;
 
-        fireEvent.change(todo, { target: { value: "changed todo" } });
+        fireEvent.change(todo, { target: { value: "changed to do" } });
         fireEvent.blur(todo);
 
-        expect(todo.value).toBe("changed todo");
+        expect(todo.value).toBe("changed to do");
     });
 
     test("should mark a todo as done", () => {
