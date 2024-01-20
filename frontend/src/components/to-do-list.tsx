@@ -17,6 +17,14 @@ export const ToDoList = (): JSX.Element => {
         });
     };
 
+    const onDeleteTodo = (index: number): void => {
+        setTodos((prevTodos) => {
+            const newTodos = [...prevTodos];
+            newTodos.splice(index, 1);
+            return newTodos;
+        });
+    };
+
     return (
         <>
             <h1 data-testid="title">things to do</h1>
@@ -26,6 +34,9 @@ export const ToDoList = (): JSX.Element => {
                     content={todo}
                     onChange={(content) => {
                         onTodoChange(key, content);
+                    }}
+                    onDelete={() => {
+                        onDeleteTodo(key);
                     }}
                 />
             ))}
@@ -40,9 +51,10 @@ interface TodoProps {
     content: string;
     done?: boolean;
     onChange: (content: string) => void;
+    onDelete: () => void;
 }
 
-const Todo = ({ content, onChange }: TodoProps): JSX.Element => {
+const Todo = ({ content, onChange, onDelete }: TodoProps): JSX.Element => {
     const [todoContent, setTodoContent] = useState<string>(content);
     const [done, setDone] = useState<boolean>(false);
 
@@ -77,6 +89,9 @@ const Todo = ({ content, onChange }: TodoProps): JSX.Element => {
                     setTodoContent(event.target.value);
                 }}
             />
+            <button data-testid="delete-button" onClick={onDelete}>
+                delete to do
+            </button>
         </div>
     );
 };
