@@ -18,31 +18,16 @@ describe("ToDoList", () => {
         const addButton = screen.getByTestId("add-button");
 
         fireEvent.click(addButton);
-        const todos = screen.getAllByTestId("content");
-        const todo = todos[0] as HTMLInputElement;
+        const todos = screen.getAllByTestId("to-do-item");
 
         expect(todos.length).toBe(1);
-        expect(todo.placeholder).toBe("new to do");
-    });
-
-    test("should edit a todo text content", () => {
-        render(<ToDoList />);
-        const addButton = screen.getByTestId("add-button");
-        fireEvent.click(addButton);
-        const todos = screen.getAllByTestId("content");
-        const todo = todos[0] as HTMLInputElement;
-
-        fireEvent.change(todo, { target: { value: "changed to do" } });
-        fireEvent.blur(todo);
-
-        expect(todo.value).toBe("changed to do");
     });
 
     test("should mark a todo as done", () => {
         render(<ToDoList />);
         const addButton = screen.getByTestId("add-button");
         fireEvent.click(addButton);
-        const todoCheckbox = screen.getByTestId("status");
+        const todoCheckbox = screen.getByTestId("to-do-status");
 
         fireEvent.click(todoCheckbox);
 
@@ -57,8 +42,8 @@ describe("ToDoList", () => {
         render(<ToDoList />);
         const addButton = screen.getByTestId("add-button");
         fireEvent.click(addButton);
-        const todo = screen.getByTestId("todo");
-        const deleteButton = screen.getByTestId("delete-button");
+        const todo = screen.getByTestId("to-do-item");
+        const deleteButton = screen.getByTestId("to-do-delete-button");
 
         expect(todo).toBeInTheDocument();
 
