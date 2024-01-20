@@ -20,9 +20,27 @@ describe("ToDoList", () => {
 
         fireEvent.click(addButton);
 
-        const todo = screen.getAllByTestId("todo");
+        const todos = screen.getAllByTestId("todo");
+        const todo = todos[0] as HTMLInputElement;
 
-        expect(todo.length).toBe(1);
-        expect(todo[0].textContent).toBe("new todo");
+        expect(todos.length).toBe(1);
+        expect(todo.value).toBe("new todo");
+    });
+
+    test("should edit a todo text content", () => {
+        render(<ToDoList />);
+
+        const addButton = screen.getByTestId("add-button");
+
+        fireEvent.click(addButton);
+
+        const todos = screen.getAllByTestId("todo");
+
+        const todo = todos[0] as HTMLInputElement;
+
+        fireEvent.change(todo, { target: { value: "changed todo" } });
+        fireEvent.blur(todo);
+
+        expect(todo.value).toBe("changed todo");
     });
 });
