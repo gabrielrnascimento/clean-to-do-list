@@ -52,4 +52,18 @@ describe("ToDoList", () => {
 
         expect(todoCheckbox).not.toBeChecked();
     });
+
+    test("should delete a todo", () => {
+        render(<ToDoList />);
+        const addButton = screen.getByTestId("add-button");
+        fireEvent.click(addButton);
+        const todo = screen.getByTestId("todo");
+        const deleteButton = screen.getByTestId("delete-button");
+
+        expect(todo).toBeInTheDocument();
+
+        fireEvent.click(deleteButton);
+
+        expect(todo).not.toBeInTheDocument();
+    });
 });
