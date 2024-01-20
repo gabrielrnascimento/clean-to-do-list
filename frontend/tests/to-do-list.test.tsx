@@ -15,11 +15,9 @@ describe("ToDoList", () => {
 
     test("should add a todo", () => {
         render(<ToDoList />);
-
         const addButton = screen.getByTestId("add-button");
 
         fireEvent.click(addButton);
-
         const todos = screen.getAllByTestId("content");
         const todo = todos[0] as HTMLInputElement;
 
@@ -29,13 +27,9 @@ describe("ToDoList", () => {
 
     test("should edit a todo text content", () => {
         render(<ToDoList />);
-
         const addButton = screen.getByTestId("add-button");
-
         fireEvent.click(addButton);
-
         const todos = screen.getAllByTestId("content");
-
         const todo = todos[0] as HTMLInputElement;
 
         fireEvent.change(todo, { target: { value: "changed todo" } });
@@ -46,11 +40,8 @@ describe("ToDoList", () => {
 
     test("should mark a todo as done", () => {
         render(<ToDoList />);
-
         const addButton = screen.getByTestId("add-button");
-
         fireEvent.click(addButton);
-
         const todoCheckbox = screen.getByTestId("status");
 
         fireEvent.click(todoCheckbox);
