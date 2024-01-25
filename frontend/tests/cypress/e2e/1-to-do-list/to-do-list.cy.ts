@@ -42,6 +42,11 @@ describe("example to-do app", () => {
                 force: true,
             });
 
+            // delete third to-do item
+            cy.get("[data-testid='to-do-delete-button']").first().click({
+                force: true,
+            });
+
             // check that the to-do list is empty
             cy.get("[data-testid='to-do-item']").should("not.exist");
         });
