@@ -1,6 +1,6 @@
 import "@testing-library/jest-dom";
 import React, { fireEvent, render, screen } from "@testing-library/react";
-import { ToDoList } from "@/components/to-do-list";
+import { ToDoList } from "@/components/to-do-list/to-do-list";
 
 describe("ToDoList", () => {
     test("should display correct text", () => {

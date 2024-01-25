@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-unnecessary-type-assertion */
-import { ResizableInput } from "@/components/resizable-input";
+import { ResizableInput } from "@/components/resizable-input/resizable-input";
 import React, { render, screen, fireEvent } from "@testing-library/react";
 
 type SutTypes = {

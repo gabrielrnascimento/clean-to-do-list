@@ -2,11 +2,11 @@
 import "@testing-library/jest-dom";
 import React from "react";
 import { render, screen, fireEvent } from "@testing-library/react";
-import { ToDoItem } from "@/components/to-do-item";
+import { ToDoItem } from "@/components/to-do-item/to-do-item";
 
 const resizableInputMock = jest.fn();
 
-jest.mock("../../src/components/resizable-input", () => ({
+jest.mock("../../components/resizable-input/resizable-input", () => ({
     ResizableInput: (props: any) => {
         resizableInputMock(props);
         return <div data-testid="resizable-input-mock" />;

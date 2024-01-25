@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState, type MouseEventHandler } from "react";
-import { ToDoItem } from "./to-do-item";
+import { ToDoItem } from "../to-do-item/to-do-item";
 
 export const ToDoList = (): JSX.Element => {
     const [todos, setTodos] = useState<string[]>([]);

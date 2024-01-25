@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { ResizableInput } from "./resizable-input";
+import { ResizableInput } from "../resizable-input/resizable-input";
 
 interface TodoProps {
     content: string;
