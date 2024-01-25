@@ -5,5 +5,9 @@
         "types": ["cypress"],
         "strictNullChecks": true
     },
-    "include": ["../node_modules/cypress", "./**/*.ts", "../cypress.config.ts"]
+    "include": [
+        "../node_modules/cypress",
+        "./**/*.ts",
+        "../../cypress.config.ts"
+    ]
 }

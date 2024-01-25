@@ -34,5 +34,5 @@
         ".eslintrc.js",
         "*.config.js"
     ],
-    "exclude": ["node_modules", "cypress.config.ts", "cypress"]
+    "exclude": ["node_modules", "cypress.config.ts", "tests/cypress"]
 }

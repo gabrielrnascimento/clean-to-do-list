@@ -13,9 +13,9 @@ module.exports = {
     },
     overrides: [
         {
-            files: ["cypress.config.ts", "cypress/**/*.ts"],
+            files: ["cypress.config.ts", "tests/cypress/**/*.ts"],
             parserOptions: {
-                project: ["./cypress/tsconfig.json"],
+                project: ["./tests/cypress/tsconfig.json"],
             },
         },
     ],
