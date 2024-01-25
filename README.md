@@ -1,4 +1,4 @@
-# clean-to-do-list
+# clean to do list frontend
 
 ## Design
 
@@ -22,12 +22,3 @@ Based in Dario Stefanutto’s [Figma design](https://www.figma.com/community/fil
 - Jest
 - React Testing Library
 - Cypress
-
-## Backend
-
-- Java
-- Spring Boot
-- JUnit
-- Mockito
-- H2
-- Swagger
