@@ -11,7 +11,14 @@ module.exports = {
     parserOptions: {
         project: "./tsconfig.json",
     },
-
+    overrides: [
+        {
+            files: ["cypress.config.ts", "cypress/**/*.ts"],
+            parserOptions: {
+                project: ["./cypress/tsconfig.json"],
+            },
+        },
+    ],
     rules: {
         "@typescript-eslint/consistent-type-definitions": "off",
     },

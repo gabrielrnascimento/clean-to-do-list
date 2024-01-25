@@ -26,11 +26,13 @@
     },
     "include": [
         "next-env.d.ts",
-        "**/*.ts",
-        "**/*.tsx",
+        "src/**/*.ts",
+        "src/**/*.tsx",
+        "tests/unit/**/*.ts",
+        "tests/unit/**/*.tsx",
         ".next/types/**/*.ts",
         ".eslintrc.js",
         "*.config.js"
     ],
-    "exclude": ["node_modules"]
+    "exclude": ["node_modules", "cypress.config.ts", "cypress"]
 }
