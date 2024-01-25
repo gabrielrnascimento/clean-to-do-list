@@ -6,7 +6,7 @@ import { ToDoItem } from "@/components/to-do-item";
 
 const resizableInputMock = jest.fn();
 
-jest.mock("../src/components/resizable-input", () => ({
+jest.mock("../../src/components/resizable-input", () => ({
     ResizableInput: (props: any) => {
         resizableInputMock(props);
         return <div data-testid="resizable-input-mock" />;
