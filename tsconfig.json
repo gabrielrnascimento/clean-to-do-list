@@ -19,6 +19,10 @@
         "noUnusedLocals": true,
         "noUnusedParameters": true,
         "noFallthroughCasesInSwitch": true,
+
+        /* Type checking */
+        "types": ["vite/client", "jest", "@testing-library/jest-dom"],
+        "esModuleInterop": true,
     },
     "include": ["src"],
     "references": [{ "path": "./tsconfig.node.json" }],
