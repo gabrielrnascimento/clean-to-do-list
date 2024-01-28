@@ -1,11 +1,16 @@
 import { useState } from "react";
 import { ToDoItem } from "./to-do-item";
 
+type ToDo = {
+    done: boolean;
+    description: string;
+};
+
 export const ToDoList = (): JSX.Element => {
-    const [toDos, setToDos] = useState<string[]>([]);
+    const [toDos, setToDos] = useState<ToDo[]>([]);
 
     const handleAddToDo = (): void => {
-        setToDos([...toDos, ""]);
+        setToDos([...toDos, { done: false, description: "" }]);
     };
 
     const handleToDoDescriptionChange = (
@@ -13,7 +18,7 @@ export const ToDoList = (): JSX.Element => {
         description: string
     ): void => {
         const newToDos = [...toDos];
-        newToDos[index] = description;
+        newToDos[index].description = description;
         setToDos(newToDos);
     };
 
@@ -27,10 +32,10 @@ export const ToDoList = (): JSX.Element => {
         <>
             <h1>things to do</h1>
             <ul>
-                {toDos.map((description, key) => (
+                {toDos.map((todo, key) => (
                     <ToDoItem
                         key={key}
-                        description={description}
+                        description={todo.description}
                         onDescriptionChange={(newDescription: string) => {
                             handleToDoDescriptionChange(key, newDescription);
                         }}
