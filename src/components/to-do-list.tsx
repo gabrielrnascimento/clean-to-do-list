@@ -4,7 +4,7 @@ import { ToDoItem } from "./to-do-item";
 export const ToDoList = (): JSX.Element => {
     const [toDos, setToDos] = useState<string[]>([]);
 
-    const onClick = (): void => {
+    const handleAddToDo = (): void => {
         setToDos([...toDos, "new to-do"]);
     };
 
@@ -16,7 +16,7 @@ export const ToDoList = (): JSX.Element => {
                     <ToDoItem key={key} />
                 ))}
             </ul>
-            <button onClick={onClick}>add to-do</button>
+            <button onClick={handleAddToDo}>add to-do</button>
         </>
     );
 };
