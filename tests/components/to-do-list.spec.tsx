@@ -1,8 +1,12 @@
 import { fireEvent, render, screen } from "@testing-library/react";
 import { ToDoList } from "../../src/components/to-do-list";
+import { type ToDoItemProps } from "../../src/components/to-do-item";
+
+const toDoItemMock = jest.fn();
 
 jest.mock("../../src/components/to-do-item", () => ({
-    ToDoItem: () => {
+    ToDoItem: (props: ToDoItemProps) => {
+        toDoItemMock(props);
         return <div data-testid="to-do-item-mock"></div>;
     },
 }));
@@ -30,5 +34,17 @@ describe("ToDoList", () => {
         const toDos = screen.getAllByTestId("to-do-item-mock");
 
         expect(toDos.length).toBe(2);
+    });
+
+    test("should call ToDoItem with correct props", () => {
+        makeSut();
+        const addButton = screen.getByRole("button", { name: "add to-do" });
+
+        fireEvent.click(addButton);
+
+        expect(toDoItemMock).toHaveBeenNthCalledWith(1, {
+            description: "",
+            onDescriptionChange: expect.any(Function),
+        });
     });
 });
