@@ -5,15 +5,30 @@ export const ToDoList = (): JSX.Element => {
     const [toDos, setToDos] = useState<string[]>([]);
 
     const handleAddToDo = (): void => {
-        setToDos([...toDos, "new to-do"]);
+        setToDos([...toDos, ""]);
+    };
+
+    const handleToDoDescriptionChange = (
+        index: number,
+        description: string
+    ): void => {
+        const newToDos = [...toDos];
+        newToDos[index] = description;
+        setToDos(newToDos);
     };
 
     return (
         <>
             <h1>things to do</h1>
             <ul>
-                {toDos.map((key) => (
-                    <ToDoItem key={key} />
+                {toDos.map((description, key) => (
+                    <ToDoItem
+                        key={key}
+                        description={description}
+                        onDescriptionChange={(newDescription: string) => {
+                            handleToDoDescriptionChange(key, newDescription);
+                        }}
+                    />
                 ))}
             </ul>
             <button onClick={handleAddToDo}>add to-do</button>
