@@ -1,14 +1,18 @@
 /* eslint-disable @typescript-eslint/no-unnecessary-type-assertion */
-import { render, screen } from "@testing-library/react";
+import { fireEvent, render, screen } from "@testing-library/react";
 import { ResizableInputText } from "../../src/components/resizable-input-text";
 
 type SutTypes = {
     placeholder: string;
+    onBlurMock: jest.Mock;
 };
 
 const makeSut = (placeholder: string = "any placeholder"): SutTypes => {
-    render(<ResizableInputText placeholder={placeholder} />);
-    return { placeholder };
+    const onBlurMock = jest.fn();
+    render(
+        <ResizableInputText placeholder={placeholder} onBlur={onBlurMock} />
+    );
+    return { placeholder, onBlurMock };
 };
 
 describe("ResizableInputText", () => {
@@ -66,5 +70,15 @@ describe("ResizableInputText", () => {
         expect(resizableText).toHaveStyle(resizableTextStyle);
         expect(resizableText).not.toBeVisible();
         expect(resizableInput).toHaveStyle(resizableInputStyle);
+    });
+
+    test("should call onBlur with correct value", () => {
+        const { onBlurMock } = makeSut();
+        const input = screen.getByTestId("resizable-input") as HTMLInputElement;
+
+        fireEvent.change(input, { target: { value: "any value" } });
+        fireEvent.blur(input);
+
+        expect(onBlurMock).toHaveBeenCalledWith("any value");
     });
 });
