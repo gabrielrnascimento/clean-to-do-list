@@ -17,6 +17,12 @@ export const ToDoList = (): JSX.Element => {
         setToDos(newToDos);
     };
 
+    const handleDeleteToDo = (index: number): void => {
+        const newToDos = [...toDos];
+        newToDos.splice(index, 1);
+        setToDos(newToDos);
+    };
+
     return (
         <>
             <h1>things to do</h1>
@@ -27,6 +33,9 @@ export const ToDoList = (): JSX.Element => {
                         description={description}
                         onDescriptionChange={(newDescription: string) => {
                             handleToDoDescriptionChange(key, newDescription);
+                        }}
+                        onDelete={() => {
+                            handleDeleteToDo(key);
                         }}
                     />
                 ))}
