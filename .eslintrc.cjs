@@ -3,11 +3,17 @@ module.exports = {
     env: { browser: true, es2020: true },
     extends: [
         "eslint:recommended",
+        "standard-with-typescript",
         "plugin:@typescript-eslint/recommended",
         "plugin:react-hooks/recommended",
         "prettier",
     ],
-    ignorePatterns: ["dist", ".eslintrc.cjs"],
+    ignorePatterns: [
+        "dist",
+        ".eslintrc.cjs",
+        "jest.config.js",
+        "vite.config.ts",
+    ],
     parser: "@typescript-eslint/parser",
     plugins: ["react-refresh", "prettier"],
     rules: {
@@ -16,5 +22,7 @@ module.exports = {
             { allowConstantExport: true },
         ],
         "prettier/prettier": "error",
+        "@typescript-eslint/no-non-null-assertion": "off",
+        "@typescript-eslint/triple-slash-reference": "off",
     },
 };
