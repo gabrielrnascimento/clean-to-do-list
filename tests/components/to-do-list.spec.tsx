@@ -45,6 +45,7 @@ describe("ToDoList", () => {
         expect(toDoItemMock).toHaveBeenNthCalledWith(1, {
             description: "",
             onDescriptionChange: expect.any(Function),
+            onDelete: expect.any(Function),
         });
     });
 });

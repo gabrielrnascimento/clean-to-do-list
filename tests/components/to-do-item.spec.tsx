@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-unnecessary-type-assertion */
-import { render, screen } from "@testing-library/react";
+import { fireEvent, render, screen } from "@testing-library/react";
 import { ToDoItem } from "../../src/components/to-do-item";
 import { type ResizableInputProps } from "../../src/components/resizable-input-text";
 
@@ -15,20 +15,24 @@ jest.mock("../../src/components/resizable-input-text", () => ({
 type SutTypes = {
     description: string;
     onDescriptionChangeMock: jest.Mock;
+    onDeleteMock: jest.Mock;
 };
 
 const makeSut = (description: string = "any description"): SutTypes => {
     const onDescriptionChangeMock = jest.fn();
+    const onDeleteMock = jest.fn();
     render(
         <ToDoItem
             description={description}
             onDescriptionChange={onDescriptionChangeMock}
+            onDelete={onDeleteMock}
         />
     );
 
     return {
         description,
         onDescriptionChangeMock,
+        onDeleteMock,
     };
 };
 
@@ -51,5 +55,16 @@ describe("ToDoItem", () => {
             onBlur: onDescriptionChangeMock,
         });
         expect(deleteButton.textContent).toBe("delete to-do");
+    });
+
+    test("should call onDelete on delete button click", () => {
+        const { onDeleteMock } = makeSut();
+        const deleteButton = screen.getByRole("button", {
+            name: "delete to-do",
+        });
+
+        fireEvent.click(deleteButton);
+
+        expect(onDeleteMock).toHaveBeenCalledTimes(1);
     });
 });
