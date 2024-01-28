@@ -16,16 +16,19 @@ type SutTypes = {
     description: string;
     onDescriptionChangeMock: jest.Mock;
     onDeleteMock: jest.Mock;
+    onStatusChangeMock: jest.Mock;
 };
 
 const makeSut = (description: string = "any description"): SutTypes => {
     const onDescriptionChangeMock = jest.fn();
     const onDeleteMock = jest.fn();
+    const onStatusChangeMock = jest.fn();
     render(
         <ToDoItem
             description={description}
             onDescriptionChange={onDescriptionChangeMock}
             onDelete={onDeleteMock}
+            onStatusChange={onStatusChangeMock}
         />
     );
 
@@ -33,6 +36,7 @@ const makeSut = (description: string = "any description"): SutTypes => {
         description,
         onDescriptionChangeMock,
         onDeleteMock,
+        onStatusChangeMock,
     };
 };
 
@@ -66,5 +70,15 @@ describe("ToDoItem", () => {
         fireEvent.click(deleteButton);
 
         expect(onDeleteMock).toHaveBeenCalledTimes(1);
+    });
+
+    test("should call onStatusChange on checkbox click", () => {
+        const { onStatusChangeMock } = makeSut();
+        const status = screen.getByRole("checkbox") as HTMLInputElement;
+
+        fireEvent.click(status);
+
+        expect(status.checked).toBe(true);
+        expect(onStatusChangeMock).toHaveBeenCalledTimes(1);
     });
 });

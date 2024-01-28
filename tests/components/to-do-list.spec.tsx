@@ -46,6 +46,7 @@ describe("ToDoList", () => {
             description: "",
             onDescriptionChange: expect.any(Function),
             onDelete: expect.any(Function),
+            onStatusChange: expect.any(Function),
         });
     });
 });
