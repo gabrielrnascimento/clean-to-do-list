@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { ResizableInputText } from "./resizable-input-text";
 
 export type ToDoItemProps = {
@@ -13,13 +14,26 @@ export const ToDoItem = ({
     onDelete,
     onStatusChange,
 }: ToDoItemProps): JSX.Element => {
+    const [isDone, setIsDone] = useState<boolean>(false);
+
+    const handleStatusChange = (): void => {
+        setIsDone(!isDone);
+        onStatusChange();
+    };
+
+    const doneStyle = {
+        textDecoration: "line-through",
+        opacity: 0.5,
+    };
+
     return (
         <>
-            <input onChange={onStatusChange} type="checkbox" />
+            <input onChange={handleStatusChange} type="checkbox" />
             <ResizableInputText
                 placeholder="new to-do"
                 value={description}
                 onBlur={onDescriptionChange}
+                style={isDone ? doneStyle : undefined}
             />
             <button onClick={onDelete}>delete to-do</button>
         </>
