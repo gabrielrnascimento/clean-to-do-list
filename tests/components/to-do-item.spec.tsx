@@ -14,7 +14,13 @@ jest.mock("../../src/components/resizable-input-text", () => ({
 
 describe("ToDoItem", () => {
     test("should display correct initial values", () => {
-        render(<ToDoItem />);
+        const onDescriptionChangeMock = jest.fn();
+        render(
+            <ToDoItem
+                description="any value"
+                onDescriptionChange={onDescriptionChangeMock}
+            />
+        );
         const status = screen.getByRole("checkbox") as HTMLInputElement;
         const resizableInputText = screen.getByTestId(
             "resizable-input-text-mock"
@@ -27,6 +33,8 @@ describe("ToDoItem", () => {
         expect(resizableInputText).toBeInTheDocument();
         expect(resizableInputTextMock).toHaveBeenCalledWith({
             placeholder: "new to-do",
+            value: "any value",
+            onBlur: onDescriptionChangeMock,
         });
         expect(deleteButton.textContent).toBe("delete to-do");
     });
