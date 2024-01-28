@@ -5,12 +5,14 @@ import { ResizableInputText } from "../../src/components/resizable-input-text";
 type SutTypes = {
     placeholder: string;
     value?: string;
+    style?: React.CSSProperties;
     onBlurMock: jest.Mock;
 };
 
 const makeSut = (
     placeholder: string = "any placeholder",
-    value: string = "any value"
+    value: string = "any value",
+    style?: React.CSSProperties
 ): SutTypes => {
     const onBlurMock = jest.fn();
     render(
@@ -18,6 +20,7 @@ const makeSut = (
             placeholder={placeholder}
             value={value}
             onBlur={onBlurMock}
+            style={style}
         />
     );
     return { placeholder, value, onBlurMock };
@@ -26,17 +29,21 @@ const makeSut = (
 describe("ResizableInputText", () => {
     test("should display correct initial values", () => {
         const { placeholder, value } = makeSut();
-        const span = screen.getByTestId("resizable-text") as HTMLSpanElement;
-        const input = screen.getByTestId("resizable-input") as HTMLInputElement;
+        const resizableText = screen.getByTestId(
+            "resizable-text"
+        ) as HTMLSpanElement;
+        const resizableInput = screen.getByTestId(
+            "resizable-input"
+        ) as HTMLInputElement;
 
-        expect(span.textContent).toBe(value);
-        expect(input.placeholder).toBe(placeholder);
-        expect(input.value).toBe(value);
+        expect(resizableText.textContent).toBe(value);
+        expect(resizableInput.placeholder).toBe(placeholder);
+        expect(resizableInput.value).toBe(value);
     });
 
     test("should have correct styles for resizable components", () => {
         makeSut();
-        const container = screen.getByTestId(
+        const resizableContainer = screen.getByTestId(
             "resizable-container"
         ) as HTMLDivElement;
         const resizableText = screen.getByTestId(
@@ -74,7 +81,7 @@ describe("ResizableInputText", () => {
             border: "none",
         };
 
-        expect(container).toHaveStyle(resizableContainerStyle);
+        expect(resizableContainer).toHaveStyle(resizableContainerStyle);
         expect(resizableText).toHaveStyle(resizableTextStyle);
         expect(resizableText).not.toBeVisible();
         expect(resizableInput).toHaveStyle(resizableInputStyle);
@@ -82,11 +89,23 @@ describe("ResizableInputText", () => {
 
     test("should call onBlur with correct value", () => {
         const { onBlurMock } = makeSut();
-        const input = screen.getByTestId("resizable-input") as HTMLInputElement;
+        const resizableInput = screen.getByTestId(
+            "resizable-input"
+        ) as HTMLInputElement;
 
-        fireEvent.change(input, { target: { value: "any value" } });
-        fireEvent.blur(input);
+        fireEvent.change(resizableInput, { target: { value: "any value" } });
+        fireEvent.blur(resizableInput);
 
         expect(onBlurMock).toHaveBeenCalledWith("any value");
+    });
+
+    test("should apply style to input when received in props", () => {
+        const style = { color: "red" };
+        makeSut("any placeholder", "any value", style);
+        const resizableInput = screen.getByTestId(
+            "resizable-input"
+        ) as HTMLInputElement;
+
+        expect(resizableInput).toHaveStyle(style);
     });
 });
