@@ -2,10 +2,18 @@
 import { render, screen } from "@testing-library/react";
 import { ResizableInputText } from "../../src/components/resizable-input-text";
 
+type SutTypes = {
+    placeholder: string;
+};
+
+const makeSut = (placeholder: string = "any placeholder"): SutTypes => {
+    render(<ResizableInputText placeholder={placeholder} />);
+    return { placeholder };
+};
+
 describe("ResizableInputText", () => {
     test("should display correct initial values", () => {
-        const placeholder = "any placeholder";
-        render(<ResizableInputText placeholder={placeholder} />);
+        const { placeholder } = makeSut();
 
         const span = screen.getByTestId("resizable-text") as HTMLSpanElement;
         const input = screen.getByTestId("resizable-input") as HTMLInputElement;
