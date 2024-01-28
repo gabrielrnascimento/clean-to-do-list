@@ -1,8 +1,8 @@
 export const ToDoList = (): JSX.Element => {
     return (
         <>
-            <h1 data-testid="title">things to do</h1>
-            <button data-testid="add-button">add to-do</button>
+            <h1>things to do</h1>
+            <button>add to-do</button>
         </>
     );
 };
