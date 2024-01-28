@@ -39,12 +39,14 @@ export type ResizableInputProps = {
     placeholder: string;
     value?: string;
     onBlur: (value: string) => void;
+    style?: React.CSSProperties;
 };
 
 export const ResizableInputText = ({
     placeholder,
     value,
     onBlur,
+    style,
 }: ResizableInputProps): JSX.Element => {
     const [inputValue, setInputValue] = useState<string>(value ?? "");
 
@@ -71,6 +73,7 @@ export const ResizableInputText = ({
                 onChange={handleInputChange}
                 autoFocus
                 onBlur={handleInputBlur}
+                style={style}
             />
         </ResizableContainer>
     );
