@@ -35,7 +35,7 @@ const ResizableInput = styled.input`
     border: none;
 `;
 
-type ResizableInputProps = {
+export type ResizableInputProps = {
     placeholder: string;
 };
 
