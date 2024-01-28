@@ -4,26 +4,34 @@ import { ResizableInputText } from "../../src/components/resizable-input-text";
 
 type SutTypes = {
     placeholder: string;
+    value?: string;
     onBlurMock: jest.Mock;
 };
 
-const makeSut = (placeholder: string = "any placeholder"): SutTypes => {
+const makeSut = (
+    placeholder: string = "any placeholder",
+    value: string = "any value"
+): SutTypes => {
     const onBlurMock = jest.fn();
     render(
-        <ResizableInputText placeholder={placeholder} onBlur={onBlurMock} />
+        <ResizableInputText
+            placeholder={placeholder}
+            value={value}
+            onBlur={onBlurMock}
+        />
     );
-    return { placeholder, onBlurMock };
+    return { placeholder, value, onBlurMock };
 };
 
 describe("ResizableInputText", () => {
     test("should display correct initial values", () => {
-        const { placeholder } = makeSut();
+        const { placeholder, value } = makeSut();
         const span = screen.getByTestId("resizable-text") as HTMLSpanElement;
         const input = screen.getByTestId("resizable-input") as HTMLInputElement;
 
-        expect(span.textContent).toBe(placeholder);
+        expect(span.textContent).toBe(value);
         expect(input.placeholder).toBe(placeholder);
-        expect(input.value).toBe("");
+        expect(input.value).toBe(value);
     });
 
     test("should have correct styles for resizable components", () => {
