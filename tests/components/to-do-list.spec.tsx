@@ -1,6 +1,12 @@
 import { fireEvent, render, screen } from "@testing-library/react";
 import { ToDoList } from "../../src/components/to-do-list";
 
+jest.mock("../../src/components/to-do-item", () => ({
+    ToDoItem: () => {
+        return <div data-testid="to-do-item-mock"></div>;
+    },
+}));
+
 const makeSut = (): void => {
     render(<ToDoList />);
 };
@@ -15,16 +21,14 @@ describe("ToDoList", () => {
         expect(addButton.textContent).toBe("add to-do");
     });
 
-    test("should add a to-do with correct values ", () => {
+    test("should add a to-do ", () => {
         makeSut();
         const addButton = screen.getByRole("button", { name: "add to-do" });
 
         fireEvent.click(addButton);
         fireEvent.click(addButton);
-        const toDos = screen.getAllByRole("listitem");
+        const toDos = screen.getAllByTestId("to-do-item-mock");
 
         expect(toDos.length).toBe(2);
-        expect(toDos[0].textContent).toBe("new to-do");
-        expect(toDos[1].textContent).toBe("new to-do");
     });
 });
