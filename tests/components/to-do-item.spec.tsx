@@ -81,4 +81,21 @@ describe("ToDoItem", () => {
         expect(status.checked).toBe(true);
         expect(onStatusChangeMock).toHaveBeenCalledTimes(1);
     });
+
+    test("should pass correct style when status is checked", () => {
+        const { description, onDescriptionChangeMock } = makeSut();
+        const status = screen.getByRole("checkbox") as HTMLInputElement;
+
+        fireEvent.click(status);
+
+        expect(resizableInputTextMock).toHaveBeenCalledWith({
+            placeholder: "new to-do",
+            value: description,
+            onBlur: onDescriptionChangeMock,
+            style: {
+                textDecoration: "line-through",
+                opacity: 0.5,
+            },
+        });
+    });
 });
