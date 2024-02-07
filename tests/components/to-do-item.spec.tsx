@@ -43,13 +43,13 @@ const makeSut = (description: string = "any description"): SutTypes => {
 describe("ToDoItem", () => {
     test("should display correct initial values", () => {
         const { description, onDescriptionChangeMock } = makeSut();
-        const status = screen.getByRole("checkbox") as HTMLInputElement;
+        const status = screen.getByTestId(
+            "status-checkbox"
+        ) as HTMLInputElement;
         const resizableInputText = screen.getByTestId(
             "resizable-input-text-mock"
         );
-        const deleteButton = screen.getByRole("button", {
-            name: "delete to-do",
-        });
+        const deleteButton = screen.getByTestId("delete-button");
 
         expect(status.checked).toBe(false);
         expect(resizableInputText).toBeInTheDocument();
@@ -63,9 +63,7 @@ describe("ToDoItem", () => {
 
     test("should call onDelete on delete button click", () => {
         const { onDeleteMock } = makeSut();
-        const deleteButton = screen.getByRole("button", {
-            name: "delete to-do",
-        });
+        const deleteButton = screen.getByTestId("delete-button");
 
         fireEvent.click(deleteButton);
 
@@ -74,8 +72,9 @@ describe("ToDoItem", () => {
 
     test("should call onStatusChange on checkbox click", () => {
         const { onStatusChangeMock } = makeSut();
-        const status = screen.getByRole("checkbox") as HTMLInputElement;
-
+        const status = screen.getByTestId(
+            "status-checkbox"
+        ) as HTMLInputElement;
         fireEvent.click(status);
 
         expect(status.checked).toBe(true);
@@ -84,8 +83,9 @@ describe("ToDoItem", () => {
 
     test("should pass correct style when status is checked", () => {
         const { description, onDescriptionChangeMock } = makeSut();
-        const status = screen.getByRole("checkbox") as HTMLInputElement;
-
+        const status = screen.getByTestId(
+            "status-checkbox"
+        ) as HTMLInputElement;
         fireEvent.click(status);
 
         expect(resizableInputTextMock).toHaveBeenCalledWith({
@@ -97,5 +97,16 @@ describe("ToDoItem", () => {
                 opacity: 0.5,
             },
         });
+    });
+
+    test("should not display delete button and status checkbox", () => {
+        makeSut();
+        const deleteButton = screen.getByTestId("delete-button");
+        const status = screen.getByTestId(
+            "status-checkbox"
+        ) as HTMLInputElement;
+
+        expect(deleteButton).not.toBeVisible();
+        expect(status).not.toBeVisible();
     });
 });
