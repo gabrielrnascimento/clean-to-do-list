@@ -1,14 +1,5 @@
 import { useState } from "react";
 import { ResizableInputText } from "./resizable-input-text";
-import styled from "styled-components";
-
-const DeleteButton = styled.button`
-    display: none;
-`;
-
-const StatusCheckbox = styled.input`
-    display: none;
-`;
 
 export type ToDoItemProps = {
     description: string;
@@ -24,6 +15,7 @@ export const ToDoItem = ({
     onStatusChange,
 }: ToDoItemProps): JSX.Element => {
     const [isDone, setIsDone] = useState<boolean>(false);
+    const [isHovered, setIsHovered] = useState<boolean>(false);
 
     const handleStatusChange = (): void => {
         setIsDone(!isDone);
@@ -36,21 +28,34 @@ export const ToDoItem = ({
     };
 
     return (
-        <>
-            <StatusCheckbox
-                data-testid="status-checkbox"
-                onChange={handleStatusChange}
-                type="checkbox"
-            />
+        <div
+            data-testid="to-do-item-container"
+            onMouseEnter={() => {
+                setIsHovered(true);
+            }}
+            onMouseLeave={() => {
+                setIsHovered(false);
+            }}
+        >
+            {isHovered && (
+                <input
+                    data-testid="status-checkbox"
+                    onChange={handleStatusChange}
+                    type="checkbox"
+                    checked={isDone}
+                />
+            )}
             <ResizableInputText
                 placeholder="new to-do"
                 value={description}
                 onBlur={onDescriptionChange}
                 style={isDone ? doneStyle : undefined}
             />
-            <DeleteButton data-testid="delete-button" onClick={onDelete}>
-                delete to-do
-            </DeleteButton>
-        </>
+            {isHovered && (
+                <button data-testid="delete-button" onClick={onDelete}>
+                    delete to-do
+                </button>
+            )}
+        </div>
     );
 };
