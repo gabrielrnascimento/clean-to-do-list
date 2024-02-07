@@ -1,5 +1,14 @@
 import { useState } from "react";
 import { ResizableInputText } from "./resizable-input-text";
+import styled from "styled-components";
+
+const DeleteButton = styled.button`
+    display: none;
+`;
+
+const StatusCheckbox = styled.input`
+    display: none;
+`;
 
 export type ToDoItemProps = {
     description: string;
@@ -28,14 +37,20 @@ export const ToDoItem = ({
 
     return (
         <>
-            <input onChange={handleStatusChange} type="checkbox" />
+            <StatusCheckbox
+                data-testid="status-checkbox"
+                onChange={handleStatusChange}
+                type="checkbox"
+            />
             <ResizableInputText
                 placeholder="new to-do"
                 value={description}
                 onBlur={onDescriptionChange}
                 style={isDone ? doneStyle : undefined}
             />
-            <button onClick={onDelete}>delete to-do</button>
+            <DeleteButton data-testid="delete-button" onClick={onDelete}>
+                delete to-do
+            </DeleteButton>
         </>
     );
 };
