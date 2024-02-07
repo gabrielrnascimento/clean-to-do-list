@@ -12,17 +12,27 @@ jest.mock("../../src/components/resizable-input-text", () => ({
     },
 }));
 
+type SutParams = {
+    description?: string;
+    shouldHover?: boolean;
+};
+
 type SutTypes = {
     description: string;
+    toDoContainer: HTMLElement;
     onDescriptionChangeMock: jest.Mock;
     onDeleteMock: jest.Mock;
     onStatusChangeMock: jest.Mock;
 };
 
-const makeSut = (description: string = "any description"): SutTypes => {
+const makeSut = ({
+    description = "any description",
+    shouldHover = true,
+}: SutParams = {}): SutTypes => {
     const onDescriptionChangeMock = jest.fn();
     const onDeleteMock = jest.fn();
     const onStatusChangeMock = jest.fn();
+
     render(
         <ToDoItem
             description={description}
@@ -32,8 +42,14 @@ const makeSut = (description: string = "any description"): SutTypes => {
         />
     );
 
+    const toDoContainer = screen.getByTestId("to-do-item-container");
+    if (shouldHover) {
+        fireEvent.mouseEnter(toDoContainer);
+    }
+
     return {
         description,
+        toDoContainer,
         onDescriptionChangeMock,
         onDeleteMock,
         onStatusChangeMock,
@@ -100,13 +116,24 @@ describe("ToDoItem", () => {
     });
 
     test("should not display delete button and status checkbox", () => {
-        makeSut();
+        makeSut({ shouldHover: false });
+        const deleteButton = screen.queryByTestId("delete-button");
+        const status = screen.queryByTestId("status-checkbox");
+
+        expect(deleteButton).toBeNull();
+        expect(status).toBeNull();
+    });
+
+    test("should display delete button and status checkbox on hover", async () => {
+        const { toDoContainer } = makeSut();
+
+        fireEvent.mouseEnter(toDoContainer);
         const deleteButton = screen.getByTestId("delete-button");
         const status = screen.getByTestId(
             "status-checkbox"
         ) as HTMLInputElement;
 
-        expect(deleteButton).not.toBeVisible();
-        expect(status).not.toBeVisible();
+        expect(deleteButton).toBeVisible();
+        expect(status).toBeVisible();
     });
 });
