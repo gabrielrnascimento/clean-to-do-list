@@ -1,8 +1,9 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { ResizableInputText } from "./resizable-input-text";
 
 export type ToDoItemProps = {
     description: string;
+    isDone: boolean;
     onDescriptionChange: (description: string) => void;
     onDelete: () => void;
     onStatusChange: () => void;
@@ -10,15 +11,20 @@ export type ToDoItemProps = {
 
 export const ToDoItem = ({
     description,
+    isDone,
     onDescriptionChange,
     onDelete,
     onStatusChange,
 }: ToDoItemProps): JSX.Element => {
-    const [isDone, setIsDone] = useState<boolean>(false);
+    const [isToDoDone, setIsToDoDone] = useState<boolean>(false);
     const [isHovered, setIsHovered] = useState<boolean>(false);
 
+    useEffect(() => {
+        setIsToDoDone(isDone);
+    }, [isDone]);
+
     const handleStatusChange = (): void => {
-        setIsDone(!isDone);
+        setIsToDoDone(!isToDoDone);
         onStatusChange();
     };
 
@@ -42,14 +48,14 @@ export const ToDoItem = ({
                     data-testid="status-checkbox"
                     onChange={handleStatusChange}
                     type="checkbox"
-                    checked={isDone}
+                    checked={isToDoDone}
                 />
             )}
             <ResizableInputText
                 placeholder="new to-do"
                 value={description}
                 onBlur={onDescriptionChange}
-                style={isDone ? doneStyle : undefined}
+                style={isToDoDone ? doneStyle : undefined}
             />
             {isHovered && (
                 <button data-testid="delete-button" onClick={onDelete}>

@@ -42,6 +42,7 @@ export const ToDoList = (): JSX.Element => {
                     <ToDoItem
                         key={key}
                         description={todo.description}
+                        isDone={todo.done}
                         onDescriptionChange={(newDescription: string) => {
                             handleToDoDescriptionChange(key, newDescription);
                         }}

@@ -36,6 +36,7 @@ const makeSut = ({
     render(
         <ToDoItem
             description={description}
+            isDone={false}
             onDescriptionChange={onDescriptionChangeMock}
             onDelete={onDeleteMock}
             onStatusChange={onStatusChangeMock}
