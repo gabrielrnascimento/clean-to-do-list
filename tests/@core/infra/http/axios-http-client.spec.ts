@@ -1,7 +1,15 @@
 /* eslint-disable import/first */
+
+const mockAxiosResponse = {
+    status: 200,
+    data: "any_value",
+};
+
 const axiosMock = jest.fn();
 jest.mock("axios", () => ({
-    request: axiosMock,
+    request: axiosMock.mockImplementation(
+        async () => await Promise.resolve(mockAxiosResponse)
+    ),
 }));
 
 import { HttpMethod } from "../../../../src/@core/application/http";
@@ -30,6 +38,20 @@ describe("AxiosHttpClient", () => {
         expect(axiosMock).toHaveBeenCalledWith({
             url: "any_url",
             method: HttpMethod.GET,
+        });
+    });
+
+    test("should return correct axios response", async () => {
+        const { sut } = makeSut();
+
+        const response = await sut.request({
+            url: "any_url",
+            method: HttpMethod.GET,
+        });
+
+        expect(response).toEqual({
+            statusCode: mockAxiosResponse.status,
+            body: mockAxiosResponse.data,
         });
     });
 });
