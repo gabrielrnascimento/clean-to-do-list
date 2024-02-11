@@ -1,9 +1,11 @@
 import { fireEvent, render, screen } from "@testing-library/react";
 import { ToDoList } from "../../src/components/to-do-list";
 import { type ToDoItemProps } from "../../src/components/to-do-item";
+import { type ListToDosUseCase } from "../../src/@core/domain/usecases/list-to-dos.usecase";
+import { type ToDo } from "../../src/@core/domain/entities";
+import { makeMockToDos } from "../mocks";
 
 const toDoItemMock = jest.fn();
-
 jest.mock("../../src/components/to-do-item", () => ({
     ToDoItem: (props: ToDoItemProps) => {
         toDoItemMock(props);
@@ -11,8 +13,27 @@ jest.mock("../../src/components/to-do-item", () => ({
     },
 }));
 
-const makeSut = (): void => {
-    render(<ToDoList />);
+class ListToDosUseCaseSpy implements ListToDosUseCase {
+    response = makeMockToDos();
+    callsCount = 0;
+
+    async listToDos(): Promise<ToDo[]> {
+        this.callsCount++;
+        return this.response;
+    }
+}
+
+type SutTypes = {
+    listToDosUseCaseSpy: ListToDosUseCaseSpy;
+};
+
+const makeSut = (): SutTypes => {
+    const listToDosUseCaseSpy = new ListToDosUseCaseSpy();
+    render(<ToDoList listToDosUseCase={listToDosUseCaseSpy} />);
+
+    return {
+        listToDosUseCaseSpy,
+    };
 };
 
 describe("ToDoList", () => {
@@ -49,5 +70,11 @@ describe("ToDoList", () => {
             onDelete: expect.any(Function),
             onStatusChange: expect.any(Function),
         });
+    });
+
+    test("should call ListToDos usecase on page load", async () => {
+        const { listToDosUseCaseSpy } = makeSut();
+
+        expect(listToDosUseCaseSpy.callsCount).toBe(1);
     });
 });
