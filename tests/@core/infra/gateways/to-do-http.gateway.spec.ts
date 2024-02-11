@@ -56,4 +56,13 @@ describe("ToDoHttpGateway", () => {
 
         expect(toDos).toEqual(httpClientSpy.response.body);
     });
+
+    test("should return an empty array if HttpClient.request.body is undefined", async () => {
+        const { sut, httpClientSpy } = makeSut();
+        httpClientSpy.response.body = undefined;
+
+        const toDos = await sut.getToDos();
+
+        expect(toDos).toEqual([]);
+    });
 });
