@@ -1,4 +1,4 @@
-import { fireEvent, render, screen } from "@testing-library/react";
+import { fireEvent, render, screen, waitFor } from "@testing-library/react";
 import { ToDoList } from "../../src/components/to-do-list";
 import { type ToDoItemProps } from "../../src/components/to-do-item";
 import { type ListToDosUseCase } from "../../src/@core/domain/usecases/list-to-dos.usecase";
@@ -37,6 +37,9 @@ const makeSut = (): SutTypes => {
 };
 
 describe("ToDoList", () => {
+    beforeEach(() => {
+        jest.clearAllMocks();
+    });
     test("should display correct initial values", () => {
         makeSut();
         const title = screen.getByRole("heading", { name: "things to do" });
@@ -76,5 +79,25 @@ describe("ToDoList", () => {
         const { listToDosUseCaseSpy } = makeSut();
 
         expect(listToDosUseCaseSpy.callsCount).toBe(1);
+    });
+
+    test("should populate to-dos with ListToDos response on page load", async () => {
+        const { listToDosUseCaseSpy } = makeSut();
+
+        await waitFor(() => {
+            const toDos = screen.getAllByTestId("to-do-item-mock");
+
+            expect(toDos.length).toBe(listToDosUseCaseSpy.response.length);
+            toDos.forEach((toDo, index) => {
+                expect(toDoItemMock).toHaveBeenNthCalledWith(index + 1, {
+                    description:
+                        listToDosUseCaseSpy.response[index].description,
+                    isDone: listToDosUseCaseSpy.response[index].isDone,
+                    onDescriptionChange: expect.any(Function),
+                    onDelete: expect.any(Function),
+                    onStatusChange: expect.any(Function),
+                });
+            });
+        });
     });
 });
