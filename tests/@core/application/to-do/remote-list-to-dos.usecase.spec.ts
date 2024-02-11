@@ -3,30 +3,32 @@ import { type ToDo } from "../../../../src/@core/domain/entities";
 import { type ToDoGateway } from "../../../../src/@core/domain/gateways";
 import { makeMockToDos } from "../../../mocks";
 
-class ToDoGatewayStub implements ToDoGateway {
+class ToDoGatewaySpy implements ToDoGateway {
+    response: ToDo[] = makeMockToDos();
+
     async getToDos(): Promise<ToDo[]> {
-        return makeMockToDos();
+        return this.response;
     }
 }
 
 type SutTypes = {
     sut: RemoteListToDosUseCase;
-    toDoGatewayStub: ToDoGatewayStub;
+    toDoGatewaySpy: ToDoGatewaySpy;
 };
 
 const makeSut = (): SutTypes => {
-    const toDoGatewayStub = new ToDoGatewayStub();
-    const sut = new RemoteListToDosUseCase(toDoGatewayStub);
+    const toDoGatewaySpy = new ToDoGatewaySpy();
+    const sut = new RemoteListToDosUseCase(toDoGatewaySpy);
     return {
         sut,
-        toDoGatewayStub,
+        toDoGatewaySpy,
     };
 };
 
 describe("RemoteListToDosUseCase", () => {
     test("should call ToDoGateway.getToDos", async () => {
-        const { sut, toDoGatewayStub } = makeSut();
-        const getTodosSpy = jest.spyOn(toDoGatewayStub, "getToDos");
+        const { sut, toDoGatewaySpy } = makeSut();
+        const getTodosSpy = jest.spyOn(toDoGatewaySpy, "getToDos");
 
         await sut.listToDos();
 
@@ -34,10 +36,10 @@ describe("RemoteListToDosUseCase", () => {
     });
 
     test("should return values from ToDoGateway.getToDos", async () => {
-        const { sut } = makeSut();
+        const { sut, toDoGatewaySpy } = makeSut();
 
         const toDos = await sut.listToDos();
 
-        expect(toDos).toEqual(makeMockToDos());
+        expect(toDos).toEqual(toDoGatewaySpy.response);
     });
 });
