@@ -6,36 +6,40 @@ import {
 } from "../../../../src/@core/application/http";
 import { type ToDo } from "../../../../src/@core/domain/entities";
 import { ToDoHttpGateway } from "../../../../src/@core/infra/gateways/to-do-http.gateway";
+import { makeMockToDos } from "../../../mocks";
 
-class HttpClientStub implements HttpClient {
+class HttpClientSpy implements HttpClient {
+    response: HttpResponse<ToDo[]> = {
+        statusCode: 200,
+        body: makeMockToDos(),
+    };
+
     async request(
         requestParams: HttpRequestParams
     ): Promise<HttpResponse<ToDo[]>> {
-        return {
-            statusCode: 200,
-        };
+        return this.response;
     }
 }
 
 type SutTypes = {
     sut: ToDoHttpGateway;
-    httpClientStub: HttpClientStub;
+    httpClientSpy: HttpClientSpy;
 };
 
 const makeSut = (): SutTypes => {
-    const httpClientStub = new HttpClientStub();
-    const sut = new ToDoHttpGateway("any_url", httpClientStub);
+    const httpClientSpy = new HttpClientSpy();
+    const sut = new ToDoHttpGateway("any_url", httpClientSpy);
     return {
         sut,
-        httpClientStub,
+        httpClientSpy,
     };
 };
 
 describe("ToDoHttpGateway", () => {
     test("should call HttpClient.request with correct values", async () => {
-        const { sut, httpClientStub } = makeSut();
+        const { sut, httpClientSpy } = makeSut();
         const url = "any_url";
-        const requestSpy = jest.spyOn(httpClientStub, "request");
+        const requestSpy = jest.spyOn(httpClientSpy, "request");
 
         await sut.getToDos();
 
@@ -43,5 +47,13 @@ describe("ToDoHttpGateway", () => {
             method: HttpMethod.GET,
             url,
         });
+    });
+
+    test("should return values from HttpClient.request.body", async () => {
+        const { sut, httpClientSpy } = makeSut();
+
+        const toDos = await sut.getToDos();
+
+        expect(toDos).toEqual(httpClientSpy.response.body);
     });
 });
