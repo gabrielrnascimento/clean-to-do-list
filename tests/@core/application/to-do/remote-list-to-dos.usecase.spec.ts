@@ -8,10 +8,23 @@ class ToDoGatewayStub implements ToDoGateway {
     }
 }
 
+type SutTypes = {
+    sut: RemoteListToDosUseCase;
+    toDoGatewayStub: ToDoGatewayStub;
+};
+
+const makeSut = (): SutTypes => {
+    const toDoGatewayStub = new ToDoGatewayStub();
+    const sut = new RemoteListToDosUseCase(toDoGatewayStub);
+    return {
+        sut,
+        toDoGatewayStub,
+    };
+};
+
 describe("RemoteListToDosUseCase", () => {
     test("should call ToDoGateway.getToDos", async () => {
-        const toDoGatewayStub = new ToDoGatewayStub();
-        const sut = new RemoteListToDosUseCase(toDoGatewayStub);
+        const { sut, toDoGatewayStub } = makeSut();
         const getTodosSpy = jest.spyOn(toDoGatewayStub, "getToDos");
 
         await sut.listToDos();
