@@ -1,21 +1,7 @@
 import { RemoteListToDosUseCase } from "../../../../src/@core/application/to-do";
-import { ToDo } from "../../../../src/@core/domain/entities";
+import { type ToDo } from "../../../../src/@core/domain/entities";
 import { type ToDoGateway } from "../../../../src/@core/domain/gateways";
-
-const makeMockToDos = (): ToDo[] => {
-    return [
-        new ToDo({
-            id: "1",
-            description: "any_description",
-            isDone: false,
-        }),
-        new ToDo({
-            id: "2",
-            description: "another_description",
-            isDone: true,
-        }),
-    ];
-};
+import { makeMockToDos } from "../../../mocks";
 
 class ToDoGatewayStub implements ToDoGateway {
     async getToDos(): Promise<ToDo[]> {
