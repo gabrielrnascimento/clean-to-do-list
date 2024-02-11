@@ -17,11 +17,24 @@ class HttpClientStub implements HttpClient {
     }
 }
 
+type SutTypes = {
+    sut: ToDoHttpGateway;
+    httpClientStub: HttpClientStub;
+};
+
+const makeSut = (): SutTypes => {
+    const httpClientStub = new HttpClientStub();
+    const sut = new ToDoHttpGateway("any_url", httpClientStub);
+    return {
+        sut,
+        httpClientStub,
+    };
+};
+
 describe("ToDoHttpGateway", () => {
     test("should call HttpClient.request with correct values", async () => {
-        const httpClientStub = new HttpClientStub();
+        const { sut, httpClientStub } = makeSut();
         const url = "any_url";
-        const sut = new ToDoHttpGateway(url, httpClientStub);
         const requestSpy = jest.spyOn(httpClientStub, "request");
 
         await sut.getToDos();
