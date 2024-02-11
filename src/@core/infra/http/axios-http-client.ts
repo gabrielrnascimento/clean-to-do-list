@@ -10,14 +10,14 @@ export class AxiosHttpClient implements HttpClient {
     async request(
         requestParams: HttpRequestParams
     ): Promise<HttpResponse<ToDo[]>> {
-        await axios.request({
+        const response = await axios.request({
             url: requestParams.url,
             method: requestParams.method,
         });
 
         return {
-            statusCode: 200,
-            body: [],
+            statusCode: response.status,
+            body: response.data,
         };
     }
 }
