@@ -1,11 +1,7 @@
 import { useEffect, useState } from "react";
 import { ToDoItem } from "./to-do-item";
 import { type ListToDosUseCase } from "../@core/domain/usecases/list-to-dos.usecase";
-
-type ToDo = {
-    done: boolean;
-    description: string;
-};
+import { ToDo } from "../@core/domain/entities";
 
 type Props = {
     listToDosUseCase: ListToDosUseCase;
@@ -15,7 +11,7 @@ export const ToDoList = ({ listToDosUseCase }: Props): JSX.Element => {
     const [toDos, setToDos] = useState<ToDo[]>([]);
 
     const handleAddToDo = (): void => {
-        setToDos([...toDos, { done: false, description: "" }]);
+        setToDos([...toDos, new ToDo({ isDone: false, description: "" })]);
     };
 
     const handleToDoDescriptionChange = (
@@ -35,14 +31,16 @@ export const ToDoList = ({ listToDosUseCase }: Props): JSX.Element => {
 
     const handleToDoStatusChange = (index: number): void => {
         const newToDos = [...toDos];
-        newToDos[index].done = !newToDos[index].done;
+        newToDos[index].isDone = !newToDos[index].isDone;
         setToDos(newToDos);
     };
 
     useEffect(() => {
         listToDosUseCase
             .listToDos()
-            .then()
+            .then((response) => {
+                setToDos(response);
+            })
             .catch((error) => {
                 console.error(error);
             });
@@ -57,7 +55,7 @@ export const ToDoList = ({ listToDosUseCase }: Props): JSX.Element => {
                     <ToDoItem
                         key={key}
                         description={todo.description}
-                        isDone={todo.done}
+                        isDone={todo.isDone}
                         onDescriptionChange={(newDescription: string) => {
                             handleToDoDescriptionChange(key, newDescription);
                         }}
