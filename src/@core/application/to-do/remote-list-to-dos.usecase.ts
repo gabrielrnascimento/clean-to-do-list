@@ -5,8 +5,6 @@ export class RemoteListToDosUseCase {
     constructor(private readonly toDoGateway: ToDoGateway) {}
 
     async listToDos(): Promise<ToDo[]> {
-        await this.toDoGateway.getToDos();
-
-        return [];
+        return await this.toDoGateway.getToDos();
     }
 }
