@@ -1,12 +1,17 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { ToDoItem } from "./to-do-item";
+import { type ListToDosUseCase } from "../@core/domain/usecases/list-to-dos.usecase";
 
 type ToDo = {
     done: boolean;
     description: string;
 };
 
-export const ToDoList = (): JSX.Element => {
+type Props = {
+    listToDosUseCase: ListToDosUseCase;
+};
+
+export const ToDoList = ({ listToDosUseCase }: Props): JSX.Element => {
     const [toDos, setToDos] = useState<ToDo[]>([]);
 
     const handleAddToDo = (): void => {
@@ -33,6 +38,16 @@ export const ToDoList = (): JSX.Element => {
         newToDos[index].done = !newToDos[index].done;
         setToDos(newToDos);
     };
+
+    useEffect(() => {
+        listToDosUseCase
+            .listToDos()
+            .then()
+            .catch((error) => {
+                console.error(error);
+            });
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, []);
 
     return (
         <>
