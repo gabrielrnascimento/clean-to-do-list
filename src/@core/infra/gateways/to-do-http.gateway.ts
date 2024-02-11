@@ -8,11 +8,11 @@ export class ToDoHttpGateway {
     ) {}
 
     async getToDos(): Promise<ToDo[]> {
-        await this.httpClient.request({
+        const response = await this.httpClient.request({
             method: HttpMethod.GET,
             url: this.url,
         });
 
-        return [];
+        return response.body ?? [];
     }
 }
