@@ -22,13 +22,20 @@ class ListToDosUseCaseSpy implements ListToDosUseCase {
         return this.response;
     }
 }
+type SutParams = {
+    listToDosUseCaseResponse?: ToDo[];
+};
 
 type SutTypes = {
     listToDosUseCaseSpy: ListToDosUseCaseSpy;
 };
 
-const makeSut = (): SutTypes => {
+const makeSut = ({
+    listToDosUseCaseResponse: response,
+}: SutParams = {}): SutTypes => {
     const listToDosUseCaseSpy = new ListToDosUseCaseSpy();
+    if (response != null) listToDosUseCaseSpy.response = response;
+
     render(<ToDoList listToDosUseCase={listToDosUseCaseSpy} />);
 
     return {
@@ -40,18 +47,26 @@ describe("ToDoList", () => {
     beforeEach(() => {
         jest.clearAllMocks();
     });
-    test("should display correct initial values", () => {
+
+    test("should display correct initial values", async () => {
         makeSut();
-        const title = screen.getByRole("heading", { name: "things to do" });
-        const addButton = screen.getByRole("button", { name: "add to-do" });
+        const title = await screen.findByRole("heading", {
+            name: "things to do",
+        });
+        const addButton = await screen.findByRole("button", {
+            name: "add to-do",
+        });
 
         expect(title.textContent).toBe("things to do");
         expect(addButton.textContent).toBe("add to-do");
     });
 
-    test("should add a to-do ", () => {
-        makeSut();
-        const addButton = screen.getByRole("button", { name: "add to-do" });
+    test("should add a to-do ", async () => {
+        makeSut({ listToDosUseCaseResponse: [] });
+
+        const addButton = await screen.findByRole("button", {
+            name: "add to-do",
+        });
 
         fireEvent.click(addButton);
         fireEvent.click(addButton);
@@ -60,9 +75,12 @@ describe("ToDoList", () => {
         expect(toDos.length).toBe(2);
     });
 
-    test("should call ToDoItem with correct props", () => {
-        makeSut();
-        const addButton = screen.getByRole("button", { name: "add to-do" });
+    test("should call ToDoItem with correct props", async () => {
+        makeSut({ listToDosUseCaseResponse: [] });
+
+        const addButton = await screen.findByRole("button", {
+            name: "add to-do",
+        });
 
         fireEvent.click(addButton);
 
@@ -78,7 +96,9 @@ describe("ToDoList", () => {
     test("should call ListToDos usecase on page load", async () => {
         const { listToDosUseCaseSpy } = makeSut();
 
-        expect(listToDosUseCaseSpy.callsCount).toBe(1);
+        await waitFor(() => {
+            expect(listToDosUseCaseSpy.callsCount).toBe(1);
+        });
     });
 
     test("should populate to-dos with ListToDos response on page load", async () => {
