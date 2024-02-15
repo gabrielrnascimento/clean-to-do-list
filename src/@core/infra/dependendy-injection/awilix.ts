@@ -11,7 +11,7 @@ export const container = createContainer({
 
 container.register({
     httpClient: asClass(AxiosHttpClient),
-    toDoGateway: asClass(ToDoHttpGateway),
+    listToDosGateway: asClass(ToDoHttpGateway),
     url: asValue(env.apiUrl),
     remoteListToDosUseCase: asClass(RemoteListToDosUseCase),
 });

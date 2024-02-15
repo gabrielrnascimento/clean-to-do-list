@@ -36,33 +36,35 @@ const makeSut = (): SutTypes => {
 };
 
 describe("ToDoHttpGateway", () => {
-    test("should call HttpClient.request with correct values", async () => {
-        const { sut, httpClientSpy } = makeSut();
-        const url = "any_url";
-        const requestSpy = jest.spyOn(httpClientSpy, "request");
+    describe("getToDos", () => {
+        test("should call HttpClient.request with correct values", async () => {
+            const { sut, httpClientSpy } = makeSut();
+            const url = "any_url";
+            const requestSpy = jest.spyOn(httpClientSpy, "request");
 
-        await sut.getToDos();
+            await sut.getToDos();
 
-        expect(requestSpy).toHaveBeenCalledWith({
-            method: HttpMethod.GET,
-            url,
+            expect(requestSpy).toHaveBeenCalledWith({
+                method: HttpMethod.GET,
+                url,
+            });
         });
-    });
 
-    test("should return values from HttpClient.request.body", async () => {
-        const { sut, httpClientSpy } = makeSut();
+        test("should return values from HttpClient.request.body", async () => {
+            const { sut, httpClientSpy } = makeSut();
 
-        const toDos = await sut.getToDos();
+            const toDos = await sut.getToDos();
 
-        expect(toDos).toEqual(httpClientSpy.response.body);
-    });
+            expect(toDos).toEqual(httpClientSpy.response.body);
+        });
 
-    test("should return an empty array if HttpClient.request.body is undefined", async () => {
-        const { sut, httpClientSpy } = makeSut();
-        httpClientSpy.response.body = undefined;
+        test("should return an empty array if HttpClient.request.body is undefined", async () => {
+            const { sut, httpClientSpy } = makeSut();
+            httpClientSpy.response.body = undefined;
 
-        const toDos = await sut.getToDos();
+            const toDos = await sut.getToDos();
 
-        expect(toDos).toEqual([]);
+            expect(toDos).toEqual([]);
+        });
     });
 });
