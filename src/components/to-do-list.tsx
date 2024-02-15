@@ -1,16 +1,17 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { ToDoItem } from "./to-do-item";
+import { type ListToDosUseCase } from "../@core/domain/usecases/list-to-dos.usecase";
+import { ToDo } from "../@core/domain/entities";
 
-type ToDo = {
-    done: boolean;
-    description: string;
+type Props = {
+    listToDosUseCase: ListToDosUseCase;
 };
 
-export const ToDoList = (): JSX.Element => {
+export const ToDoList = ({ listToDosUseCase }: Props): JSX.Element => {
     const [toDos, setToDos] = useState<ToDo[]>([]);
 
     const handleAddToDo = (): void => {
-        setToDos([...toDos, { done: false, description: "" }]);
+        setToDos([...toDos, new ToDo({ isDone: false, description: "" })]);
     };
 
     const handleToDoDescriptionChange = (
@@ -30,9 +31,21 @@ export const ToDoList = (): JSX.Element => {
 
     const handleToDoStatusChange = (index: number): void => {
         const newToDos = [...toDos];
-        newToDos[index].done = !newToDos[index].done;
+        newToDos[index].isDone = !newToDos[index].isDone;
         setToDos(newToDos);
     };
+
+    useEffect(() => {
+        listToDosUseCase
+            .listToDos()
+            .then((response) => {
+                setToDos(response);
+            })
+            .catch((error) => {
+                console.error(error);
+            });
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, []);
 
     return (
         <>
@@ -42,7 +55,7 @@ export const ToDoList = (): JSX.Element => {
                     <ToDoItem
                         key={key}
                         description={todo.description}
-                        isDone={todo.done}
+                        isDone={todo.isDone}
                         onDescriptionChange={(newDescription: string) => {
                             handleToDoDescriptionChange(key, newDescription);
                         }}
