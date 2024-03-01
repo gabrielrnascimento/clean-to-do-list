@@ -5,7 +5,7 @@ type ToDoProps = {
 };
 
 export class ToDo {
-    constructor(public props: ToDoProps) {}
+    constructor(private readonly props: ToDoProps) {}
 
     get id(): string {
         return this.props.id ?? "";
