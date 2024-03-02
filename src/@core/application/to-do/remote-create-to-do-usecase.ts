@@ -7,7 +7,7 @@ import {
 export class RemoteCreateToDoUseCase implements CreateToDoUseCase {
     constructor(private readonly createToDoGateway: CreateToDoGateway) {}
 
-    async createToDo(toDo: CreateToDoUseCaseParams): Promise<void> {
-        await this.createToDoGateway.create(toDo);
+    async createToDo(params: CreateToDoUseCaseParams): Promise<void> {
+        await this.createToDoGateway.create(params);
     }
 }

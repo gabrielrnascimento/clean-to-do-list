@@ -30,14 +30,14 @@ const makeSut = (): SutTypes => {
 describe("RemoteCreateToDoUseCase", () => {
     test("should call CreateToDoGateway with correct values", async () => {
         const { sut, createToDoGatewaySpy } = makeSut();
-        const toDo: CreateToDoUseCaseParams = {
+        const params: CreateToDoUseCaseParams = {
             description: "any_description",
         };
 
-        await sut.createToDo(toDo);
+        await sut.createToDo(params);
 
         expect(createToDoGatewaySpy.params).toEqual({
-            description: toDo.description,
+            description: params.description,
         });
     });
 
