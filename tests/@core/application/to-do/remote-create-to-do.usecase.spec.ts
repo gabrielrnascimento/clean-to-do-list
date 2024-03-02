@@ -40,4 +40,17 @@ describe("RemoteCreateToDoUseCase", () => {
             description: toDo.description,
         });
     });
+
+    test("should throw if CreateToDoGateway throws", async () => {
+        const { sut, createToDoGatewaySpy } = makeSut();
+        jest.spyOn(createToDoGatewaySpy, "create").mockRejectedValueOnce(
+            new Error("any_error")
+        );
+
+        const promise = sut.createToDo({
+            description: "any_description",
+        });
+
+        await expect(promise).rejects.toThrow(new Error("any_error"));
+    });
 });
