@@ -13,10 +13,23 @@ class CreateToDoGatewaySpy implements CreateToDoGateway {
     }
 }
 
+type SutTypes = {
+    sut: RemoteCreateToDoUseCase;
+    createToDoGatewaySpy: CreateToDoGatewaySpy;
+};
+
+const makeSut = (): SutTypes => {
+    const createToDoGatewaySpy = new CreateToDoGatewaySpy();
+    const sut = new RemoteCreateToDoUseCase(createToDoGatewaySpy);
+    return {
+        sut,
+        createToDoGatewaySpy,
+    };
+};
+
 describe("RemoteCreateToDoUseCase", () => {
     test("should call CreateToDoGateway with correct values", async () => {
-        const createToDoGatewaySpy = new CreateToDoGatewaySpy();
-        const sut = new RemoteCreateToDoUseCase(createToDoGatewaySpy);
+        const { sut, createToDoGatewaySpy } = makeSut();
         const toDo: CreateToDoUseCaseParams = {
             description: "any_description",
         };
