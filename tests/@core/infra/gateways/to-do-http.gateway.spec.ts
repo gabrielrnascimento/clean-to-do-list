@@ -42,7 +42,7 @@ describe("ToDoHttpGateway", () => {
             const url = "any_url";
             const requestSpy = jest.spyOn(httpClientSpy, "request");
 
-            await sut.getToDos();
+            await sut.getAll();
 
             expect(requestSpy).toHaveBeenCalledWith({
                 method: HttpMethod.GET,
@@ -53,7 +53,7 @@ describe("ToDoHttpGateway", () => {
         test("should return values from HttpClient.request.body", async () => {
             const { sut, httpClientSpy } = makeSut();
 
-            const toDos = await sut.getToDos();
+            const toDos = await sut.getAll();
 
             expect(toDos).toEqual(httpClientSpy.response.body);
         });
@@ -62,7 +62,7 @@ describe("ToDoHttpGateway", () => {
             const { sut, httpClientSpy } = makeSut();
             httpClientSpy.response.body = undefined;
 
-            const toDos = await sut.getToDos();
+            const toDos = await sut.getAll();
 
             expect(toDos).toEqual([]);
         });

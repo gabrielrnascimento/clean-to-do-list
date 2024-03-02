@@ -6,7 +6,7 @@ import { makeMockToDos } from "../../../mocks";
 class ListToDosGatewaySpy implements ListToDosGateway {
     response: ToDo[] = makeMockToDos();
 
-    async getToDos(): Promise<ToDo[]> {
+    async getAll(): Promise<ToDo[]> {
         return this.response;
     }
 }
@@ -28,7 +28,7 @@ const makeSut = (): SutTypes => {
 describe("RemoteListToDosUseCase", () => {
     test("should call ListToDosGateway.getToDos", async () => {
         const { sut, listToDosGatewaySpy } = makeSut();
-        const getTodosSpy = jest.spyOn(listToDosGatewaySpy, "getToDos");
+        const getTodosSpy = jest.spyOn(listToDosGatewaySpy, "getAll");
 
         await sut.listToDos();
 

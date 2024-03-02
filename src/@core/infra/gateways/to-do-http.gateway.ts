@@ -8,7 +8,7 @@ export class ToDoHttpGateway implements ListToDosGateway {
         private readonly httpClient: HttpClient<ToDo[]>
     ) {}
 
-    async getToDos(): Promise<ToDo[]> {
+    async getAll(): Promise<ToDo[]> {
         const response = await this.httpClient.request({
             method: HttpMethod.GET,
             url: this.url,
