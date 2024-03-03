@@ -41,4 +41,19 @@ describe("RemoteUpdateToDoUseCase", () => {
 
         expect(updateToDoGatewaySpy.params).toEqual(params);
     });
+
+    test("should throw if UpdateToDoGateway throws", async () => {
+        const { sut, updateToDoGatewaySpy } = makeSut();
+        const params: UpdateToDoUseCaseParams = {
+            id: "any_id",
+            description: "any_description",
+            isDone: true,
+        };
+        const error = new Error("any_error");
+        jest.spyOn(updateToDoGatewaySpy, "update").mockRejectedValueOnce(error);
+
+        const promise = sut.updateToDo(params);
+
+        await expect(promise).rejects.toThrow(error);
+    });
 });
