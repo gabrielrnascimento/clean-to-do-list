@@ -14,10 +14,23 @@ class UpdateToDoGatewaySpy implements UpdateToDoGateway {
     }
 }
 
+type SutTypes = {
+    sut: RemoteUpdateToDoUseCase;
+    updateToDoGatewaySpy: UpdateToDoGatewaySpy;
+};
+
+const makeSut = (): SutTypes => {
+    const updateToDoGatewaySpy = new UpdateToDoGatewaySpy();
+    const sut = new RemoteUpdateToDoUseCase(updateToDoGatewaySpy);
+    return {
+        sut,
+        updateToDoGatewaySpy,
+    };
+};
+
 describe("RemoteUpdateToDoUseCase", () => {
     test("should call UpdateToDoGateway with correct values", async () => {
-        const updateToDoGatewaySpy = new UpdateToDoGatewaySpy();
-        const sut = new RemoteUpdateToDoUseCase(updateToDoGatewaySpy);
+        const { sut, updateToDoGatewaySpy } = makeSut();
         const params: UpdateToDoUseCaseParams = {
             id: "any_id",
             description: "any_description",
