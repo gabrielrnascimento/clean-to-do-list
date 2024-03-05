@@ -10,10 +10,23 @@ class DeleteToDoGatewaySpy implements DeleteToDoGateway {
     }
 }
 
+type SutTypes = {
+    sut: RemoteDeleteToDoUseCase;
+    deleteToDoGatewaySpy: DeleteToDoGatewaySpy;
+};
+
+const makeSut = (): SutTypes => {
+    const deleteToDoGatewaySpy = new DeleteToDoGatewaySpy();
+    const sut = new RemoteDeleteToDoUseCase(deleteToDoGatewaySpy);
+    return {
+        sut,
+        deleteToDoGatewaySpy,
+    };
+};
+
 describe("RemoteDeleteToDoUseCase", () => {
     test("should call DeleteToDoGateway with correct value", async () => {
-        const deleteToDoGatewaySpy = new DeleteToDoGatewaySpy();
-        const sut = new RemoteDeleteToDoUseCase(deleteToDoGatewaySpy);
+        const { sut, deleteToDoGatewaySpy } = makeSut();
         const id = "any_id";
 
         await sut.delete(id);
