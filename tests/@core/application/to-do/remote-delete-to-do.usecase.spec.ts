@@ -33,4 +33,14 @@ describe("RemoteDeleteToDoUseCase", () => {
 
         expect(deleteToDoGatewaySpy.params).toEqual(id);
     });
+
+    test("should throw if DeleteToDoGateway throws", async () => {
+        const { sut, deleteToDoGatewaySpy } = makeSut();
+        jest.spyOn(deleteToDoGatewaySpy, "delete").mockRejectedValueOnce(
+            new Error("any_error")
+        );
+        const promise = sut.delete("any_id");
+
+        await expect(promise).rejects.toThrow(new Error("any_error"));
+    });
 });
