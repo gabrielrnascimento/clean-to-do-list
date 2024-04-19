@@ -1,10 +1,14 @@
 export enum HttpMethod {
     GET = "GET",
+    POST = "POST",
+    DELETE = "DELETE",
+    PATCH = "PATCH",
 }
 
-export type HttpRequestParams = {
+export type HttpRequestParams<T = unknown> = {
     url: string;
-    method: HttpMethod.GET;
+    method: HttpMethod;
+    body?: T;
 };
 
 export type HttpResponse<T = unknown> = {
@@ -12,6 +16,6 @@ export type HttpResponse<T = unknown> = {
     body?: T;
 };
 
-export interface HttpClient<R = unknown> {
-    request: (requestParams: HttpRequestParams) => Promise<HttpResponse<R>>;
+export interface HttpClient<T = unknown, R = unknown> {
+    request: (requestParams: HttpRequestParams<T>) => Promise<HttpResponse<R>>;
 }
