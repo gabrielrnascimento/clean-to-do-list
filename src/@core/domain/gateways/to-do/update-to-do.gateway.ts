@@ -1,9 +1,6 @@
 import { type ToDo } from "../../entities";
 
-export type UpdateToDoGatewayParams = Pick<
-    ToDo,
-    "id" | "description" | "isDone"
->;
+export type UpdateToDoGatewayParams = Pick<ToDo, "id"> & Partial<ToDo>;
 
 export interface UpdateToDoGateway {
     update: (params: UpdateToDoGatewayParams) => Promise<void>;
