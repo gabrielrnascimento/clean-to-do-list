@@ -1,45 +1,55 @@
 import { fireEvent, render, screen, waitFor } from "@testing-library/react";
 import { ToDoList } from "../../src/components/to-do-list";
 import { type ToDoItemProps } from "../../src/components/to-do-item";
-import { type ListToDosUseCase } from "../../src/@core/domain/usecases/list-to-dos.usecase";
 import { type ToDo } from "../../src/@core/domain/entities";
-import { makeMockToDos } from "../mocks";
+import {
+    CreateToDoUseCaseSpy,
+    DeleteToDoUseCaseSpy,
+    ListToDosUseCaseSpy,
+    UpdateToDoUseCaseSpy,
+} from "../mocks";
+import { ToDoProvider } from "../../src/contexts/to-do";
 
 const toDoItemMock = jest.fn();
 jest.mock("../../src/components/to-do-item", () => ({
     ToDoItem: (props: ToDoItemProps) => {
         toDoItemMock(props);
-        return <div data-testid="to-do-item-mock"></div>;
+        return <input data-testid="to-do-item-mock"></input>;
     },
 }));
 
-class ListToDosUseCaseSpy implements ListToDosUseCase {
-    response = makeMockToDos();
-    callsCount = 0;
-
-    async listToDos(): Promise<ToDo[]> {
-        this.callsCount++;
-        return this.response;
-    }
-}
 type SutParams = {
     listToDosUseCaseResponse?: ToDo[];
 };
 
 type SutTypes = {
     listToDosUseCaseSpy: ListToDosUseCaseSpy;
+    createToDoUseCaseSpy: CreateToDoUseCaseSpy;
 };
 
 const makeSut = ({
     listToDosUseCaseResponse: response,
 }: SutParams = {}): SutTypes => {
     const listToDosUseCaseSpy = new ListToDosUseCaseSpy();
+    const createToDoUseCaseSpy = new CreateToDoUseCaseSpy();
+    const updateToDoUseCaseSpy = new UpdateToDoUseCaseSpy();
+    const deleteToDoUseCaseSpy = new DeleteToDoUseCaseSpy();
     if (response != null) listToDosUseCaseSpy.response = response;
 
-    render(<ToDoList listToDosUseCase={listToDosUseCaseSpy} />);
+    render(
+        <ToDoProvider
+            listToDosUseCase={listToDosUseCaseSpy}
+            createToDoUseCase={createToDoUseCaseSpy}
+            updateToDoUseCase={updateToDoUseCaseSpy}
+            deleteToDoUseCase={deleteToDoUseCaseSpy}
+        >
+            <ToDoList />
+        </ToDoProvider>
+    );
 
     return {
         listToDosUseCaseSpy,
+        createToDoUseCaseSpy,
     };
 };
 
@@ -61,22 +71,10 @@ describe("ToDoList", () => {
         expect(addButton.textContent).toBe("add to-do");
     });
 
-    test("should add a to-do ", async () => {
-        makeSut({ listToDosUseCaseResponse: [] });
-
-        const addButton = await screen.findByRole("button", {
-            name: "add to-do",
+    test("should call CreateToDoUseCase on button click", async () => {
+        const { createToDoUseCaseSpy } = makeSut({
+            listToDosUseCaseResponse: [],
         });
-
-        fireEvent.click(addButton);
-        fireEvent.click(addButton);
-        const toDos = screen.getAllByTestId("to-do-item-mock");
-
-        expect(toDos.length).toBe(2);
-    });
-
-    test("should call ToDoItem with correct props", async () => {
-        makeSut({ listToDosUseCaseResponse: [] });
 
         const addButton = await screen.findByRole("button", {
             name: "add to-do",
@@ -84,12 +82,8 @@ describe("ToDoList", () => {
 
         fireEvent.click(addButton);
 
-        expect(toDoItemMock).toHaveBeenNthCalledWith(1, {
-            description: "",
-            isDone: false,
-            onDescriptionChange: expect.any(Function),
-            onDelete: expect.any(Function),
-            onStatusChange: expect.any(Function),
+        await waitFor(() => {
+            expect(createToDoUseCaseSpy.callsCount).toBe(1);
         });
     });
 

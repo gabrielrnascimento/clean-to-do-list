@@ -1,10 +1,10 @@
 import { type ToDo } from "../../domain/entities";
-import { type ToDoGateway } from "../../domain/gateways";
+import { type ListToDosGateway } from "../../domain/gateways/to-do";
 
 export class RemoteListToDosUseCase {
-    constructor(private readonly toDoGateway: ToDoGateway) {}
+    constructor(private readonly listToDosGateway: ListToDosGateway) {}
 
     async listToDos(): Promise<ToDo[]> {
-        return await this.toDoGateway.getToDos();
+        return await this.listToDosGateway.getAll();
     }
 }
