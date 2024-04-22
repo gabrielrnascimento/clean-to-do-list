@@ -1,19 +1,19 @@
 {
-    "to-dos": [
-        {
-            "id": "1",
-            "description": "walk the dog",
-            "isDone": false
-        },
-        {
-            "id": "2",
-            "description": "buy some milk",
-            "isDone": true
-        },
-        {
-            "id": "3",
-            "description": "learn some code",
-            "isDone": false
-        }
-    ]
+  "to-dos": [
+    {
+      "id": "1",
+      "description": "walk the dog",
+      "isDone": false
+    },
+    {
+      "id": "2",
+      "description": "buy some milk",
+      "isDone": true
+    },
+    {
+      "id": "3",
+      "description": "learn some code",
+      "isDone": false
+    }
+  ]
 }
