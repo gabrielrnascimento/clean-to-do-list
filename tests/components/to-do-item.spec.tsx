@@ -106,7 +106,7 @@ describe("ToDoItem", () => {
             value: description,
             onBlur: expect.any(Function),
         });
-        expect(deleteButton.textContent).toBe("delete to-do");
+        expect(deleteButton).toBeInTheDocument();
     });
 
     test("should call DeleteToDoUseCase on delete button click", async () => {

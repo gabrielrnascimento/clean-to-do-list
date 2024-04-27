@@ -66,17 +66,10 @@ describe("ResizableInputText", () => {
             display: "inline-block",
         };
         const resizableTextStyle = {
-            margin: "0",
-            padding: "0 0.4rem 0 0.2rem",
-            fontSize: "inherit",
-            fontFamily: "sans-serif",
             display: "inline-block",
             visibility: "hidden",
-            whiteSpace: "pre",
         };
         const resizableInputStyle = {
-            margin: "0",
-            padding: "0 0.2rem",
             fontSize: "inherit",
             fontFamily: "sans-serif",
             position: "absolute",

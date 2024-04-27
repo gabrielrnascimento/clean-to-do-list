@@ -1,6 +1,40 @@
 import { useEffect, useState } from "react";
 import { ResizableInputText } from "./resizable-input-text";
 import { useToDoContext } from "../contexts/to-do";
+import styled from "styled-components";
+
+const ToDoItemContainer = styled.div`
+    position: relative;
+    display: flex;
+    text-align: center;
+`;
+
+const Checkbox = styled.input`
+    position: absolute;
+    scale: 2;
+    top: 0.55rem;
+    left: 0;
+`;
+
+const DeleteButtonContainer = styled.div`
+    position: relative;
+`;
+
+const DeleteButton = styled.button`
+    position: absolute;
+    top: 0.3rem;
+    left: 0.5rem;
+
+    background-image: url("../../public/trash-can-regular.svg");
+    background-color: transparent;
+    scale: 0.6;
+    width: 1.8rem;
+    height: 2rem;
+    background-size: cover;
+    border: none;
+
+    cursor: pointer;
+`;
 
 export type ToDoItemProps = {
     id: string;
@@ -40,7 +74,7 @@ export const ToDoItem = ({
     };
 
     return (
-        <div
+        <ToDoItemContainer
             data-testid="to-do-item-container"
             onMouseEnter={() => {
                 setIsHovered(true);
@@ -50,7 +84,7 @@ export const ToDoItem = ({
             }}
         >
             {isHovered && (
-                <input
+                <Checkbox
                     data-testid="status-checkbox"
                     onChange={() => {
                         void handleStatusChange();
@@ -67,16 +101,16 @@ export const ToDoItem = ({
                 }}
                 style={isToDoDone ? doneStyle : undefined}
             />
-            {isHovered && (
-                <button
-                    data-testid="delete-button"
-                    onClick={() => {
-                        void deleteToDo(id);
-                    }}
-                >
-                    delete to-do
-                </button>
-            )}
-        </div>
+            <DeleteButtonContainer>
+                {isHovered && (
+                    <DeleteButton
+                        data-testid="delete-button"
+                        onClick={() => {
+                            void deleteToDo(id);
+                        }}
+                    ></DeleteButton>
+                )}
+            </DeleteButtonContainer>
+        </ToDoItemContainer>
     );
 };
