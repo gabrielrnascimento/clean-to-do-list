@@ -67,4 +67,61 @@ describe("ToDoHttpGateway", () => {
             expect(toDos).toEqual([]);
         });
     });
+
+    describe("create", () => {
+        test("should call HttpClient.request with correct values", async () => {
+            const { sut, httpClientSpy } = makeSut();
+            const url = "any_url";
+            const requestSpy = jest.spyOn(httpClientSpy, "request");
+
+            await sut.create({ description: "any_description" });
+
+            expect(requestSpy).toHaveBeenCalledWith({
+                method: HttpMethod.POST,
+                url,
+                body: {
+                    description: "any_description",
+                    isDone: false,
+                },
+            });
+        });
+    });
+
+    describe("delete", () => {
+        test("should call HttpClient.request with correct values", async () => {
+            const { sut, httpClientSpy } = makeSut();
+            const url = "any_url";
+            const requestSpy = jest.spyOn(httpClientSpy, "request");
+
+            await sut.delete("any_id");
+
+            expect(requestSpy).toHaveBeenCalledWith({
+                method: HttpMethod.DELETE,
+                url: `${url}/any_id`,
+            });
+        });
+    });
+
+    describe("update", () => {
+        test("should call HttpClient.request with correct values", async () => {
+            const { sut, httpClientSpy } = makeSut();
+            const url = "any_url";
+            const requestSpy = jest.spyOn(httpClientSpy, "request");
+
+            await sut.update({
+                id: "any_id",
+                description: "any_description",
+                isDone: true,
+            });
+
+            expect(requestSpy).toHaveBeenCalledWith({
+                method: HttpMethod.PATCH,
+                url: `${url}/any_id`,
+                body: {
+                    description: "any_description",
+                    isDone: true,
+                },
+            });
+        });
+    });
 });

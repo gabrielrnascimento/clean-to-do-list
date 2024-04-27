@@ -1,3 +1,4 @@
+// istanbul ignore file
 import { createContainer, asClass, asValue } from "awilix";
 import { AxiosHttpClient } from "../http/axios-http-client";
 import {
