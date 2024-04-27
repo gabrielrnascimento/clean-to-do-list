@@ -25,6 +25,8 @@ type SutParams = {
 type SutTypes = {
     listToDosUseCaseSpy: ListToDosUseCaseSpy;
     createToDoUseCaseSpy: CreateToDoUseCaseSpy;
+    updateToDoUseCaseSpy: UpdateToDoUseCaseSpy;
+    deleteToDoUseCaseSpy: DeleteToDoUseCaseSpy;
 };
 
 const makeSut = ({
@@ -50,6 +52,8 @@ const makeSut = ({
     return {
         listToDosUseCaseSpy,
         createToDoUseCaseSpy,
+        updateToDoUseCaseSpy,
+        deleteToDoUseCaseSpy,
     };
 };
 
@@ -87,7 +91,7 @@ describe("ToDoList", () => {
         });
     });
 
-    test("should call ListToDos usecase on page load", async () => {
+    test("should call ListToDos use case on page load", async () => {
         const { listToDosUseCaseSpy } = makeSut();
 
         await waitFor(() => {
@@ -102,14 +106,12 @@ describe("ToDoList", () => {
             const toDos = screen.getAllByTestId("to-do-item-mock");
 
             expect(toDos.length).toBe(listToDosUseCaseSpy.response.length);
-            toDos.forEach((toDo, index) => {
+            toDos.forEach((_, index) => {
                 expect(toDoItemMock).toHaveBeenNthCalledWith(index + 1, {
+                    id: listToDosUseCaseSpy.response[index].id,
                     description:
                         listToDosUseCaseSpy.response[index].description,
                     isDone: listToDosUseCaseSpy.response[index].isDone,
-                    onDescriptionChange: expect.any(Function),
-                    onDelete: expect.any(Function),
-                    onStatusChange: expect.any(Function),
                 });
             });
         });

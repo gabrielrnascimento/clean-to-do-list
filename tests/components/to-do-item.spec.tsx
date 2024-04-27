@@ -1,47 +1,80 @@
 /* eslint-disable @typescript-eslint/no-unnecessary-type-assertion */
-import { fireEvent, render, screen } from "@testing-library/react";
+import {
+    act,
+    fireEvent,
+    render,
+    screen,
+    waitFor,
+} from "@testing-library/react";
 import { ToDoItem } from "../../src/components/to-do-item";
 import { type ResizableInputProps } from "../../src/components/resizable-input-text";
+import {
+    CreateToDoUseCaseSpy,
+    DeleteToDoUseCaseSpy,
+    ListToDosUseCaseSpy,
+    UpdateToDoUseCaseSpy,
+} from "../mocks";
+import { ToDoProvider } from "../../src/contexts/to-do";
+import type { ToDo } from "../../src/@core/domain/entities";
 
 const resizableInputTextMock = jest.fn();
 
 jest.mock("../../src/components/resizable-input-text", () => ({
     ResizableInputText: (props: ResizableInputProps) => {
         resizableInputTextMock(props);
-        return <div data-testid="resizable-input-text-mock"></div>;
+
+        return (
+            <div data-testid="resizable-container">
+                <input
+                    data-testid="resizable-input"
+                    onBlur={(event) => {
+                        props.onBlur(event.target.value);
+                    }}
+                />
+            </div>
+        );
     },
 }));
 
 type SutParams = {
+    id?: string;
     description?: string;
     shouldHover?: boolean;
+    listToDosUseCaseResponse?: ToDo[];
 };
 
 type SutTypes = {
+    id: string;
     description: string;
     toDoContainer: HTMLElement;
-    onDescriptionChangeMock: jest.Mock;
-    onDeleteMock: jest.Mock;
-    onStatusChangeMock: jest.Mock;
+    updateToDoUseCaseSpy: UpdateToDoUseCaseSpy;
+    deleteToDoUseCaseSpy: DeleteToDoUseCaseSpy;
 };
 
-const makeSut = ({
+const makeSut = async ({
+    id = "any_id",
     description = "any description",
     shouldHover = true,
-}: SutParams = {}): SutTypes => {
-    const onDescriptionChangeMock = jest.fn();
-    const onDeleteMock = jest.fn();
-    const onStatusChangeMock = jest.fn();
+    listToDosUseCaseResponse: response,
+}: SutParams = {}): Promise<SutTypes> => {
+    const listToDosUseCaseSpy = new ListToDosUseCaseSpy();
+    const createToDoUseCaseSpy = new CreateToDoUseCaseSpy();
+    const updateToDoUseCaseSpy = new UpdateToDoUseCaseSpy();
+    const deleteToDoUseCaseSpy = new DeleteToDoUseCaseSpy();
+    if (response != null) listToDosUseCaseSpy.response = response;
 
-    render(
-        <ToDoItem
-            description={description}
-            isDone={false}
-            onDescriptionChange={onDescriptionChangeMock}
-            onDelete={onDeleteMock}
-            onStatusChange={onStatusChangeMock}
-        />
-    );
+    await act(async () => {
+        render(
+            <ToDoProvider
+                listToDosUseCase={listToDosUseCaseSpy}
+                createToDoUseCase={createToDoUseCaseSpy}
+                updateToDoUseCase={updateToDoUseCaseSpy}
+                deleteToDoUseCase={deleteToDoUseCaseSpy}
+            >
+                <ToDoItem id={id} description={description} isDone={false} />
+            </ToDoProvider>
+        );
+    });
 
     const toDoContainer = screen.getByTestId("to-do-item-container");
     if (shouldHover) {
@@ -49,23 +82,21 @@ const makeSut = ({
     }
 
     return {
+        id,
         description,
         toDoContainer,
-        onDescriptionChangeMock,
-        onDeleteMock,
-        onStatusChangeMock,
+        updateToDoUseCaseSpy,
+        deleteToDoUseCaseSpy,
     };
 };
 
 describe("ToDoItem", () => {
-    test("should display correct initial values", () => {
-        const { description, onDescriptionChangeMock } = makeSut();
+    test("should display correct initial values", async () => {
+        const { description } = await makeSut();
         const status = screen.getByTestId(
             "status-checkbox"
         ) as HTMLInputElement;
-        const resizableInputText = screen.getByTestId(
-            "resizable-input-text-mock"
-        );
+        const resizableInputText = screen.getByTestId("resizable-container");
         const deleteButton = screen.getByTestId("delete-button");
 
         expect(status.checked).toBe(false);
@@ -73,33 +104,63 @@ describe("ToDoItem", () => {
         expect(resizableInputTextMock).toHaveBeenCalledWith({
             placeholder: "new to-do",
             value: description,
-            onBlur: onDescriptionChangeMock,
+            onBlur: expect.any(Function),
         });
         expect(deleteButton.textContent).toBe("delete to-do");
     });
 
-    test("should call onDelete on delete button click", () => {
-        const { onDeleteMock } = makeSut();
+    test("should call DeleteToDoUseCase on delete button click", async () => {
+        const { deleteToDoUseCaseSpy } = await makeSut();
         const deleteButton = screen.getByTestId("delete-button");
 
         fireEvent.click(deleteButton);
 
-        expect(onDeleteMock).toHaveBeenCalledTimes(1);
+        await waitFor(() => {
+            expect(deleteToDoUseCaseSpy.callsCount).toBe(1);
+        });
     });
 
-    test("should call onStatusChange on checkbox click", () => {
-        const { onStatusChangeMock } = makeSut();
+    test("should call UpdateToDoUseCase on checkbox click", async () => {
+        const { updateToDoUseCaseSpy } = await makeSut();
         const status = screen.getByTestId(
             "status-checkbox"
         ) as HTMLInputElement;
-        fireEvent.click(status);
 
+        fireEvent.click(status);
         expect(status.checked).toBe(true);
-        expect(onStatusChangeMock).toHaveBeenCalledTimes(1);
+
+        await waitFor(() => {
+            expect(updateToDoUseCaseSpy.callsCount).toBe(1);
+        });
     });
 
-    test("should pass correct style when status is checked", () => {
-        const { description, onDescriptionChangeMock } = makeSut();
+    test("should call UpdateToDoUseCase on handleToDoDescriptionChange if description is different", async () => {
+        const { updateToDoUseCaseSpy } = await makeSut();
+
+        const input = screen.getByTestId("resizable-input") as HTMLInputElement;
+        await waitFor(() => {
+            fireEvent.change(input, {
+                target: { value: "new description" },
+            });
+            fireEvent.blur(input);
+        });
+
+        expect(updateToDoUseCaseSpy.callsCount).toBe(1);
+    });
+
+    test("should not call UpdateToDoUseCase on handleToDoDescriptionChange if description is the same", async () => {
+        const { updateToDoUseCaseSpy } = await makeSut();
+
+        const input = screen.getByTestId("resizable-input") as HTMLInputElement;
+        await waitFor(() => {
+            fireEvent.blur(input);
+        });
+
+        expect(updateToDoUseCaseSpy.callsCount).toBe(0);
+    });
+
+    test("should pass correct style when status is checked", async () => {
+        const { description } = await makeSut();
         const status = screen.getByTestId(
             "status-checkbox"
         ) as HTMLInputElement;
@@ -108,7 +169,7 @@ describe("ToDoItem", () => {
         expect(resizableInputTextMock).toHaveBeenCalledWith({
             placeholder: "new to-do",
             value: description,
-            onBlur: onDescriptionChangeMock,
+            onBlur: expect.any(Function),
             style: {
                 textDecoration: "line-through",
                 opacity: 0.5,
@@ -116,8 +177,8 @@ describe("ToDoItem", () => {
         });
     });
 
-    test("should not display delete button and status checkbox", () => {
-        makeSut({ shouldHover: false });
+    test("should not display delete button and status checkbox", async () => {
+        await makeSut({ shouldHover: false });
         const deleteButton = screen.queryByTestId("delete-button");
         const status = screen.queryByTestId("status-checkbox");
 
@@ -126,7 +187,7 @@ describe("ToDoItem", () => {
     });
 
     test("should display delete button and status checkbox on hover", async () => {
-        const { toDoContainer } = makeSut();
+        const { toDoContainer } = await makeSut();
 
         fireEvent.mouseEnter(toDoContainer);
         const deleteButton = screen.getByTestId("delete-button");
@@ -136,5 +197,16 @@ describe("ToDoItem", () => {
 
         expect(deleteButton).toBeVisible();
         expect(status).toBeVisible();
+    });
+
+    test("should not display delete button and status checkbox on mouse leave", async () => {
+        const { toDoContainer } = await makeSut();
+
+        fireEvent.mouseLeave(toDoContainer);
+        const deleteButton = screen.queryByTestId("delete-button");
+        const status = screen.queryByTestId("status-checkbox");
+
+        expect(deleteButton).toBeNull();
+        expect(status).toBeNull();
     });
 });

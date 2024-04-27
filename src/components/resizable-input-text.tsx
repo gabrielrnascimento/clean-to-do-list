@@ -37,7 +37,7 @@ const ResizableInput = styled.input`
 
 export type ResizableInputProps = {
     placeholder: string;
-    value?: string;
+    value: string;
     onBlur: (value: string) => void;
     style?: React.CSSProperties;
 };
@@ -48,7 +48,7 @@ export const ResizableInputText = ({
     onBlur,
     style,
 }: ResizableInputProps): JSX.Element => {
-    const [inputValue, setInputValue] = useState<string>(value ?? "");
+    const [inputValue, setInputValue] = useState<string>(value);
 
     const handleInputChange = (
         event: React.ChangeEvent<HTMLInputElement>

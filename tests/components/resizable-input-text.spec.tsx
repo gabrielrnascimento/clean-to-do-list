@@ -41,6 +41,15 @@ describe("ResizableInputText", () => {
         expect(resizableInput.value).toBe(value);
     });
 
+    test("should display placeholder when value is empty", () => {
+        const { placeholder } = makeSut("any placeholder", "");
+        const resizableText = screen.getByTestId(
+            "resizable-text"
+        ) as HTMLSpanElement;
+
+        expect(resizableText.textContent).toBe(placeholder);
+    });
+
     test("should have correct styles for resizable components", () => {
         makeSut();
         const resizableContainer = screen.getByTestId(
@@ -92,11 +101,15 @@ describe("ResizableInputText", () => {
         const resizableInput = screen.getByTestId(
             "resizable-input"
         ) as HTMLInputElement;
+        const newInputValue = "new value";
 
-        fireEvent.change(resizableInput, { target: { value: "any value" } });
+        fireEvent.change(resizableInput, {
+            target: { value: newInputValue },
+        });
         fireEvent.blur(resizableInput);
 
-        expect(onBlurMock).toHaveBeenCalledWith("any value");
+        expect(resizableInput).toHaveValue(newInputValue);
+        expect(onBlurMock).toHaveBeenCalledWith(newInputValue);
     });
 
     test("should apply style to input when received in props", () => {

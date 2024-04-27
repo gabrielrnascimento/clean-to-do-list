@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { type ToDo } from "../../@core/domain/entities";
 import { ToDoContext } from "./to-do.context";
 import {
@@ -25,10 +25,10 @@ export const ToDoProvider: React.FC<ToDoProviderProps> = ({
 }) => {
     const [toDos, setToDos] = useState<ToDo[]>([]);
 
-    const refreshToDos = async (): Promise<void> => {
+    const refreshToDos = useCallback(async (): Promise<void> => {
         const response = await listToDosUseCase.listToDos();
         setToDos(response);
-    };
+    }, [listToDosUseCase]);
 
     useEffect(() => {
         refreshToDos()
@@ -36,26 +36,28 @@ export const ToDoProvider: React.FC<ToDoProviderProps> = ({
             .catch((error): void => {
                 console.error(error);
             });
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, []);
+    }, [refreshToDos]);
 
-    const handleAddToDo = async (): Promise<void> => {
+    const addToDo = async (): Promise<void> => {
         await createToDoUseCase.createToDo({ description: "" });
         await refreshToDos();
     };
 
-    const handleToDoDescriptionChange = async (
+    const updateToDoDescription = async (
         id: string,
         description: string
     ): Promise<void> => {
-        await updateToDoUseCase.updateToDo({
-            id,
-            description,
-        });
-        await refreshToDos();
+        const existingToDo = toDos.find((toDo) => toDo.id === id);
+        if (existingToDo?.description !== description) {
+            await updateToDoUseCase.updateToDo({
+                id,
+                description,
+            });
+            await refreshToDos();
+        }
     };
 
-    const handleToDoStatusChange = async (
+    const updateToDoStatus = async (
         id: string,
         isDone: boolean
     ): Promise<void> => {
@@ -66,7 +68,7 @@ export const ToDoProvider: React.FC<ToDoProviderProps> = ({
         await refreshToDos();
     };
 
-    const handleDeleteToDo = async (id: string): Promise<void> => {
+    const deleteToDo = async (id: string): Promise<void> => {
         await deleteToDoUseCase.delete(id);
         await refreshToDos();
     };
@@ -76,10 +78,10 @@ export const ToDoProvider: React.FC<ToDoProviderProps> = ({
             value={{
                 toDos,
                 refreshToDos,
-                handleAddToDo,
-                handleToDoDescriptionChange,
-                handleToDoStatusChange,
-                handleDeleteToDo,
+                addToDo,
+                updateToDoDescription,
+                updateToDoStatus,
+                deleteToDo,
             }}
         >
             {children}
