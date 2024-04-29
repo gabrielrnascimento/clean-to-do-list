@@ -1,30 +1,35 @@
 import { useEffect, useState } from "react";
-import { ResizableInputText } from "./resizable-input-text";
 import { useToDoContext } from "../contexts/to-do";
 import styled from "styled-components";
+import { ResizableTextArea } from "./resizable-text-area.tsx";
 
 const ToDoItemContainer = styled.div`
     position: relative;
     display: flex;
     text-align: center;
+    align-items: start;
+`;
+
+const OptionsContainer = styled.div`
+    display: flex;
+    justify-items: center;
+    align-items: center;
+    gap: 1rem;
+
+    visibility: hidden;
+
+    ${ToDoItemContainer}:hover & {
+        visibility: visible;
+    }
+
+    padding: 0.3rem 1rem 0 0;
 `;
 
 const Checkbox = styled.input`
-    position: absolute;
     scale: 2;
-    top: 0.55rem;
-    left: 0;
-`;
-
-const DeleteButtonContainer = styled.div`
-    position: relative;
 `;
 
 const DeleteButton = styled.button`
-    position: absolute;
-    top: 0.3rem;
-    left: 0.5rem;
-
     background-image: url("../../public/trash-can-regular.svg");
     background-color: transparent;
     scale: 0.6;
@@ -32,7 +37,6 @@ const DeleteButton = styled.button`
     height: 2rem;
     background-size: cover;
     border: none;
-
     cursor: pointer;
 `;
 
@@ -48,7 +52,7 @@ export const ToDoItem = ({
     isDone,
 }: ToDoItemProps): JSX.Element => {
     const [isToDoDone, setIsToDoDone] = useState<boolean>(false);
-    const [isHovered, setIsHovered] = useState<boolean>(false);
+
     const { updateToDoDescription, updateToDoStatus, deleteToDo } =
         useToDoContext();
 
@@ -74,16 +78,14 @@ export const ToDoItem = ({
     };
 
     return (
-        <ToDoItemContainer
-            data-testid="to-do-item-container"
-            onMouseEnter={() => {
-                setIsHovered(true);
-            }}
-            onMouseLeave={() => {
-                setIsHovered(false);
-            }}
-        >
-            {isHovered && (
+        <ToDoItemContainer data-testid="to-do-item-container">
+            <OptionsContainer>
+                <DeleteButton
+                    data-testid="delete-button"
+                    onClick={() => {
+                        void deleteToDo(id);
+                    }}
+                ></DeleteButton>
                 <Checkbox
                     data-testid="status-checkbox"
                     onChange={() => {
@@ -92,8 +94,8 @@ export const ToDoItem = ({
                     type="checkbox"
                     checked={isToDoDone}
                 />
-            )}
-            <ResizableInputText
+            </OptionsContainer>
+            <ResizableTextArea
                 placeholder="new to-do"
                 value={description}
                 onBlur={(newDescription) => {
@@ -101,16 +103,6 @@ export const ToDoItem = ({
                 }}
                 style={isToDoDone ? doneStyle : undefined}
             />
-            <DeleteButtonContainer>
-                {isHovered && (
-                    <DeleteButton
-                        data-testid="delete-button"
-                        onClick={() => {
-                            void deleteToDo(id);
-                        }}
-                    ></DeleteButton>
-                )}
-            </DeleteButtonContainer>
         </ToDoItemContainer>
     );
 };
