@@ -4,24 +4,24 @@ import styled from "styled-components";
 const ResizableContainer = styled.div`
     position: relative;
     display: inline-block;
+    margin: 0 0 0 2rem;
 `;
 
 const ResizableText = styled.span`
-    margin: 0;
-    padding: 0 0.4rem 0 0.2rem;
     font-size: inherit;
     font-family: sans-serif;
 
+    text-align: left;
     display: inline-block;
     visibility: hidden;
     white-space: pre;
 `;
 
 const ResizableInput = styled.input`
-    margin: 0;
-    padding: 0 0.2rem;
     font-size: inherit;
     font-family: sans-serif;
+    padding-right: 2rem;
+    width: calc(100% + 2rem);
 
     position: absolute;
     top: 0;

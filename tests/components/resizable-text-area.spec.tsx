@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-unnecessary-type-assertion */
 import { fireEvent, render, screen } from "@testing-library/react";
-import { ResizableInputText } from "../../src/components/resizable-input-text";
+import { ResizableTextArea } from "../../src/components/resizable-text-area.tsx";
 
 type SutTypes = {
     placeholder: string;
@@ -16,7 +16,7 @@ const makeSut = (
 ): SutTypes => {
     const onBlurMock = jest.fn();
     render(
-        <ResizableInputText
+        <ResizableTextArea
             placeholder={placeholder}
             value={value}
             onBlur={onBlurMock}
@@ -26,74 +26,54 @@ const makeSut = (
     return { placeholder, value, onBlurMock };
 };
 
-describe("ResizableInputText", () => {
-    test("should display correct initial values", () => {
+describe("ResizableTextarea", () => {
+    test("should should display correct initial values", () => {
         const { placeholder, value } = makeSut();
-        const resizableText = screen.getByTestId(
-            "resizable-text"
-        ) as HTMLSpanElement;
         const resizableInput = screen.getByTestId(
             "resizable-input"
-        ) as HTMLInputElement;
+        ) as HTMLTextAreaElement;
 
-        expect(resizableText.textContent).toBe(value);
+        expect(resizableInput.textContent).toBe(value);
         expect(resizableInput.placeholder).toBe(placeholder);
         expect(resizableInput.value).toBe(value);
     });
 
     test("should display placeholder when value is empty", () => {
         const { placeholder } = makeSut("any placeholder", "");
-        const resizableText = screen.getByTestId(
-            "resizable-text"
-        ) as HTMLSpanElement;
+        const resizableInput = screen.getByTestId(
+            "resizable-input"
+        ) as HTMLTextAreaElement;
 
-        expect(resizableText.textContent).toBe(placeholder);
+        expect(resizableInput.placeholder).toBe(placeholder);
     });
 
     test("should have correct styles for resizable components", () => {
         makeSut();
-        const resizableContainer = screen.getByTestId(
-            "resizable-container"
-        ) as HTMLDivElement;
-        const resizableText = screen.getByTestId(
-            "resizable-text"
-        ) as HTMLSpanElement;
-        const resizableInput = screen.getByTestId(
+        const resizableTextArea = screen.getByTestId(
             "resizable-input"
-        ) as HTMLInputElement;
-        const resizableContainerStyle = {
-            position: "relative",
-            display: "inline-block",
-        };
-        const resizableTextStyle = {
-            display: "inline-block",
-            visibility: "hidden",
-        };
-        const resizableInputStyle = {
-            fontSize: "inherit",
-            fontFamily: "sans-serif",
-            position: "absolute",
-            top: "0",
-            left: "0",
-            right: "0",
-            bottom: "0",
-            backgroundColor: "transparent",
+        ) as HTMLTextAreaElement;
+        const resizableTextAreaStyle = {
+            "font-size": "inherit",
+            "font-family": "sans-serif",
+
+            "background-color": "transparent",
             outline: "none",
             color: "#fff",
             border: "none",
+            resize: "none",
+
+            display: "flex",
+            flex: "1",
         };
 
-        expect(resizableContainer).toHaveStyle(resizableContainerStyle);
-        expect(resizableText).toHaveStyle(resizableTextStyle);
-        expect(resizableText).not.toBeVisible();
-        expect(resizableInput).toHaveStyle(resizableInputStyle);
+        expect(resizableTextArea).toHaveStyle(resizableTextAreaStyle);
     });
 
     test("should call onBlur with correct value", () => {
         const { onBlurMock } = makeSut();
         const resizableInput = screen.getByTestId(
             "resizable-input"
-        ) as HTMLInputElement;
+        ) as HTMLTextAreaElement;
         const newInputValue = "new value";
 
         fireEvent.change(resizableInput, {
@@ -110,7 +90,7 @@ describe("ResizableInputText", () => {
         makeSut("any placeholder", "any value", style);
         const resizableInput = screen.getByTestId(
             "resizable-input"
-        ) as HTMLInputElement;
+        ) as HTMLTextAreaElement;
 
         expect(resizableInput).toHaveStyle(style);
     });

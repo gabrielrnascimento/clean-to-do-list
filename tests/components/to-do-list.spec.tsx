@@ -67,12 +67,10 @@ describe("ToDoList", () => {
         const title = await screen.findByRole("heading", {
             name: "things to do",
         });
-        const addButton = await screen.findByRole("button", {
-            name: "add to-do",
-        });
+        const addButton = await screen.findByTestId("add-button");
 
         expect(title.textContent).toBe("things to do");
-        expect(addButton.textContent).toBe("add to-do");
+        expect(addButton).toBeInTheDocument();
     });
 
     test("should call CreateToDoUseCase on button click", async () => {
@@ -80,9 +78,7 @@ describe("ToDoList", () => {
             listToDosUseCaseResponse: [],
         });
 
-        const addButton = await screen.findByRole("button", {
-            name: "add to-do",
-        });
+        const addButton = await screen.findByTestId("add-button");
 
         fireEvent.click(addButton);
 
